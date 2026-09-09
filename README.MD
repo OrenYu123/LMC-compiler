@@ -1,0 +1,1 @@
+This is a simple interpreter that executes LMC(Little Man Computer) files.
