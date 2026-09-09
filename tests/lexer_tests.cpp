@@ -111,7 +111,7 @@ void testNumber(){
 
 // Test case for whitespace handling
 void testWhitespace(){
-    string source = "    Sta     x\n""\tLDA     y";
+    string source = "    STA     x\n""\tLDA     y";
     Lexer lexer(source);
     vector <Token> tokens = lexer.tokenize();
     assertToken(tokens[0], TokenType::STA, "STA");

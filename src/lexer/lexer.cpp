@@ -107,7 +107,7 @@ vector<Token> Lexer::tokenize() {
 
         if (isalpha(static_cast<unsigned char>(current())) || current() == '_') {// Identifiers and keywords start with a letter or underscore
             tokens.push_back(readWord());
-        } else if (isdigit(static_cast<unsigned char>(current())|| current() == '-' && isdigit(static_cast<unsigned char>(peek())))) {// Numbers can start with a digit or a negative sign followed by a digit
+        } else if (isdigit(static_cast<unsigned char>(current()))|| (current() == '-' && isdigit(static_cast<unsigned char>(peek())))) {// Numbers can start with a digit or a negative sign followed by a digit
             tokens.push_back(readNumber());
         } else if (current() == ';') { // ';' starts a comment
             skipComments();
