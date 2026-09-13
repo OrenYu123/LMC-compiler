@@ -1,3 +1,5 @@
+#ifndef LEXER_H
+#define LEXER_H
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -55,3 +57,4 @@ class Lexer {//interface for the lexer class
 
         TokenType keywordType(const string& word) const;
 };
+#endif

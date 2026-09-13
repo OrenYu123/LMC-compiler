@@ -129,12 +129,26 @@ lexer_tests/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexer_tests.dir/build.make CMakeFiles/lexer_tests.dir/build
 .PHONY : lexer_tests/fast
 
+#=============================================================================
+# Target rules for targets named parser_tests
+
+# Build rule for target.
+parser_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 parser_tests
+.PHONY : parser_tests
+
+# fast build rule for target.
+parser_tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/build
+.PHONY : parser_tests/fast
+
 src/lexer/lexer.o: src/lexer/lexer.cpp.o
 .PHONY : src/lexer/lexer.o
 
 # target to build an object file
 src/lexer/lexer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexer_tests.dir/build.make CMakeFiles/lexer_tests.dir/src/lexer/lexer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/lexer/lexer.cpp.o
 .PHONY : src/lexer/lexer.cpp.o
 
 src/lexer/lexer.i: src/lexer/lexer.cpp.i
@@ -143,6 +157,7 @@ src/lexer/lexer.i: src/lexer/lexer.cpp.i
 # target to preprocess a source file
 src/lexer/lexer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexer_tests.dir/build.make CMakeFiles/lexer_tests.dir/src/lexer/lexer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/lexer/lexer.cpp.i
 .PHONY : src/lexer/lexer.cpp.i
 
 src/lexer/lexer.s: src/lexer/lexer.cpp.s
@@ -151,7 +166,32 @@ src/lexer/lexer.s: src/lexer/lexer.cpp.s
 # target to generate assembly for a file
 src/lexer/lexer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexer_tests.dir/build.make CMakeFiles/lexer_tests.dir/src/lexer/lexer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/lexer/lexer.cpp.s
 .PHONY : src/lexer/lexer.cpp.s
+
+src/parser/parser.o: src/parser/parser.cpp.o
+.PHONY : src/parser/parser.o
+
+# target to build an object file
+src/parser/parser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/parser/parser.cpp.o
+.PHONY : src/parser/parser.cpp.o
+
+src/parser/parser.i: src/parser/parser.cpp.i
+.PHONY : src/parser/parser.i
+
+# target to preprocess a source file
+src/parser/parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/parser/parser.cpp.i
+.PHONY : src/parser/parser.cpp.i
+
+src/parser/parser.s: src/parser/parser.cpp.s
+.PHONY : src/parser/parser.s
+
+# target to generate assembly for a file
+src/parser/parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/parser/parser.cpp.s
+.PHONY : src/parser/parser.cpp.s
 
 tests/lexer_tests.o: tests/lexer_tests.cpp.o
 .PHONY : tests/lexer_tests.o
@@ -177,6 +217,30 @@ tests/lexer_tests.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexer_tests.dir/build.make CMakeFiles/lexer_tests.dir/tests/lexer_tests.cpp.s
 .PHONY : tests/lexer_tests.cpp.s
 
+tests/parser_tests.o: tests/parser_tests.cpp.o
+.PHONY : tests/parser_tests.o
+
+# target to build an object file
+tests/parser_tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/tests/parser_tests.cpp.o
+.PHONY : tests/parser_tests.cpp.o
+
+tests/parser_tests.i: tests/parser_tests.cpp.i
+.PHONY : tests/parser_tests.i
+
+# target to preprocess a source file
+tests/parser_tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/tests/parser_tests.cpp.i
+.PHONY : tests/parser_tests.cpp.i
+
+tests/parser_tests.s: tests/parser_tests.cpp.s
+.PHONY : tests/parser_tests.s
+
+# target to generate assembly for a file
+tests/parser_tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/tests/parser_tests.cpp.s
+.PHONY : tests/parser_tests.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -186,12 +250,19 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... lexer_tests"
+	@echo "... parser_tests"
 	@echo "... src/lexer/lexer.o"
 	@echo "... src/lexer/lexer.i"
 	@echo "... src/lexer/lexer.s"
+	@echo "... src/parser/parser.o"
+	@echo "... src/parser/parser.i"
+	@echo "... src/parser/parser.s"
 	@echo "... tests/lexer_tests.o"
 	@echo "... tests/lexer_tests.i"
 	@echo "... tests/lexer_tests.s"
+	@echo "... tests/parser_tests.o"
+	@echo "... tests/parser_tests.i"
+	@echo "... tests/parser_tests.s"
 .PHONY : help
 
 

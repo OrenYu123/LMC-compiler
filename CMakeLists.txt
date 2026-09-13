@@ -20,3 +20,10 @@ add_executable(lexer_tests
     tests/lexer_tests.cpp
     src/lexer/lexer.cpp
 )
+
+# Parser tests
+add_executable(parser_tests
+    tests/parser_tests.cpp
+    src/lexer/lexer.cpp
+    src/parser/parser.cpp
+)

@@ -64,6 +64,7 @@ CMAKE_BINARY_DIR = "/home/orenyu/code/C++/LMC compiler/build"
 
 # The main recursive "all" target.
 all: CMakeFiles/lexer_tests.dir/all
+all: CMakeFiles/parser_tests.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -72,6 +73,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/lexer_tests.dir/clean
+clean: CMakeFiles/parser_tests.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -99,6 +101,32 @@ lexer_tests: CMakeFiles/lexer_tests.dir/rule
 CMakeFiles/lexer_tests.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexer_tests.dir/build.make CMakeFiles/lexer_tests.dir/clean
 .PHONY : CMakeFiles/lexer_tests.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/parser_tests.dir
+
+# All Build rule for target.
+CMakeFiles/parser_tests.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" --progress-num=4,5,6,7 "Built target parser_tests"
+.PHONY : CMakeFiles/parser_tests.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/parser_tests.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/parser_tests.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" 0
+.PHONY : CMakeFiles/parser_tests.dir/rule
+
+# Convenience name for target.
+parser_tests: CMakeFiles/parser_tests.dir/rule
+.PHONY : parser_tests
+
+# clean rule for target.
+CMakeFiles/parser_tests.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/clean
+.PHONY : CMakeFiles/parser_tests.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
