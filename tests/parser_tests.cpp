@@ -101,7 +101,7 @@ void testNumberOperand(){
 
 
 void testCompleteProgram(){
-    string source = "INP\n""STA x\n""loop LDA x\n""SUB one\n""STA x\n""BRP loop\n""HLT\n""\n""x DAT 5""one DAT 1";
+    string source = "INP\n""STA x\n""loop LDA x\n""SUB one\n""STA x\n""BRP loop\n""HLT\n""\n""x DAT 5\n""one DAT 1";
     Lexer lexer(source);
     vector<Token> tokens = lexer.tokenize();
     Parser parser(tokens);
@@ -110,7 +110,7 @@ void testCompleteProgram(){
 
 //Tests DAT with no init val
 void testDATMissingValue(){
-    string source = "x: DAT";
+    string source = "x DAT";
     Lexer lexer(source);
     vector<Token> tokens = lexer.tokenize();
     Parser parser(tokens);
