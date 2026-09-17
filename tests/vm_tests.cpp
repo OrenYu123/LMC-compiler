@@ -56,9 +56,15 @@ string runner(const string& source){
     streambuf* originalCout = cout.rdbuf();
     stringstream output;
     cout.rdbuf(output.rdbuf());//stores IO in the output stream
-
-    vm.run();
+    try{
+        vm.run();
+    }
+    catch(...){
+        cout.rdbuf(originalCout);
+        throw;
+    }
     cout.rdbuf(originalCout);
+
     return output.str();
 }
 
@@ -120,7 +126,7 @@ void testBRZBranch(){
     assertTrue(output == "20\n","BRZ should branch when accumulator is zero");
 }
 void testBRZNoBranch(){
-    string source = "LDA wrong\nBRZ output\nLDA correct\noutput OUT\nOUT\nHLT\ncorrect DAT 6\nwrong DAT 7";
+    string source = "LDA wrong\nBRZ output\nLDA correct\noutput OUT\nHLT\ncorrect DAT 6\nwrong DAT 7";
     string output = runner(source);
     assertTrue(output=="6\n", "BRZ shouldn't branch when acc isn't zero");
 }
@@ -164,7 +170,7 @@ int main(){
             passed++;
         }
         catch(const exception& e){
-            cout << "Failed " << name << '\n           ' << e.what() << '\n';
+            cout << "Failed " << name << ": " << e.what() << '\n';
             failed++;
         }
         

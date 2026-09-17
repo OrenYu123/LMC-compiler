@@ -10,7 +10,7 @@ VM::VM(const vector<AssembledInstruction>& program) : program(program), memory(1
 void VM::run(){
     while(!hlt){
         if(pc<0 || pc >= program.size()){
-            throwVMError("PC out of bounds,");
+            throwVMError("PC out of bounds.");
         }
         const AssembledInstruction& instruction = program[pc];
         executeInstruction(instruction);
@@ -47,15 +47,12 @@ void VM::executeInstruction(const AssembledInstruction& instruction){
         break;
     case TokenType::BRA:
         executeBRA(*instruction.operand);
-        pc++;
         break;
     case TokenType::BRP:
         executeBRP(*instruction.operand);
-        pc++;
         break;
     case TokenType::BRZ:
         executeBRZ(*instruction.operand);
-        pc++;
         break;
     case TokenType::INP:
         executeINP();
@@ -134,7 +131,7 @@ int VM::wrapValue(int value) const{
 
 void VM::validateAddress(int address) const{
     if(address < 0 || address >= static_cast<int>(memory.size())){
-        throwVMError("Address must be between 0 and " + memory.size()-1 + '.');
+        throwVMError("Address must be between 0 and " + to_string(memory.size()-1) + '.');
     }
 }
 

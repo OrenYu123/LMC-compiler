@@ -269,7 +269,7 @@ int main(){
             passed++;
         }
         catch(const exception& e){
-            cout << "Failed " << name << '\n           ' << e.what() << '\n';
+            cout << "Failed " << name << ": " << e.what() << '\n';
             failed++;
         }
         
