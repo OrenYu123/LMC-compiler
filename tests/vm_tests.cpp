@@ -69,7 +69,7 @@ string runner(const string& source){
 }
 
 //-----------------
-//Test programs
+// Batch 1
 //-----------------
 void testLDA(){
     string source = "LDA x\n""OUT\n""HLT\n""x DAT 42";
@@ -141,6 +141,76 @@ void testBRPNoBranch(){
     assertTrue(output=="20\n", "BRP shouldn't branch when acc is negative");
 }
 
+//-----------------------
+// Batch 2
+//-----------------------
+
+void testINP(){
+    string source = "INP\nOUT\nHLT";
+    streambuf* originalCin = cin.rdbuf();
+    stringstream input("42\n");
+    cin.rdbuf(input.rdbuf());
+    string output = runner(source);
+    cin.rdbuf(originalCin);
+    assertTrue(output == "42\n","INP should store input in the accumulator");
+}
+
+void testNegativeLDA(){
+    string source = "LDA x\nOUT\nHLT\nx DAT -50";
+    string output = runner(source);
+    assertTrue(output=="-50\n","LDA should load negative numbers within the range");
+}
+
+void testBRPZero(){
+    string source = "LDA zero\nBRP positive\nLDA wrong\nOUT\nHLT\npositive LDA correct\nOUT\nHLT\nzero DAT 0\nwrong DAT 10\ncorrect DAT 20";
+    string output = runner(source);
+    assertTrue(output=="20\n", "BRP should branch when acc is zero");
+}
+
+void testMultADDOverflow(){
+    string source =
+        "LDA x\nADD y\nADD y\nOUT\nHLT\nx DAT 127\ny DAT 127";
+    string output = runner(source);
+    // 127 + 127 = 254 -> -2
+    // -2 + 127 = 125
+    assertTrue(output == "125\n","ADD should correctly handle multiple overflows");
+}
+
+void testMultSUBOverflow(){
+    string source =
+        "LDA x\nSUB y\nSUB y\nOUT\nHLT\nx DAT -128\ny DAT 127";
+    string output = runner(source);
+    // -128 - 127 = -255 -> 1
+    // 1 - 127 = -126
+    assertTrue(output == "-126\n","SUB should correctly handle multiple overflows");
+}
+
+void testDATExecute(){
+    string source = "BRA data\nHLT\ndata DAT 42";
+    assertThrow(source);
+}
+
+void testPCOOB(){
+    string source = "BRA 127";
+    assertThrow(source);
+}
+
+void testINPOverflow(){
+    string source = "INP\nHLT";
+    streambuf* originalCin = cin.rdbuf();
+    stringstream input("200\n");
+    cin.rdbuf(input.rdbuf());
+    bool thrown = false;
+    try{
+        runner(source);
+    }
+    catch(const exception&){
+        thrown = true;
+    }
+    cin.rdbuf(originalCin);
+    assertTrue(thrown, "INP should reject values above 127 and below -128");
+}
+
 //--------------------
 //Test runner
 //--------------------
@@ -158,6 +228,14 @@ int main(){
         {"BRZ with non-zero acc", testBRZNoBranch},
         {"BRP", testBRPBranch},
         {"BRP with negative acc", testBRPNoBranch},
+        {"INP", testINP},
+        {"Negative LDA", testNegativeLDA},
+        {"BRP with zero", testBRPZero},
+        {"Multiple ADD overflow", testMultADDOverflow},
+        {"Multiple SUB overflow", testMultSUBOverflow},
+        {"Execute DAT", testDATExecute},
+        {"OOB PC", testPCOOB},
+        {"Overflown input", testINPOverflow}
     };
     int passed = 0;
     int failed = 0;
