@@ -33,6 +33,7 @@ class VM{
         void executeOUT();
         void executeHLT();
 
+        void initializeMemory();
         int wrapValue(int value) const;
         void validateAddress(int address) const;
         void throwVMError(const string& message) const;

@@ -3,7 +3,9 @@
 
 using namespace std;
 
-VM::VM(const vector<AssembledInstruction>& program) : program(program), memory(128,0){}
+VM::VM(const vector<AssembledInstruction>& program) : program(program), memory(128,0){
+    initializeMemory();
+}
 
 void VM::run(){
     while(!hlt){
@@ -15,6 +17,14 @@ void VM::run(){
     }
 }
 
+void VM::initializeMemory(){
+    for(int address = 0; address < program.size(); address++){
+        const AssembledInstruction& instruction = program[address];
+        if(instruction.opcode == TokenType::DAT){
+            if(instruction.operand.has_value()){memory[address] = instruction.operand.value();}
+        }
+    }
+}
 
 void VM::executeInstruction(const AssembledInstruction& instruction){
     switch (instruction.opcode)
