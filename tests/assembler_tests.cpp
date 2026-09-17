@@ -100,23 +100,6 @@ void testLabelConversionToAddress(){
 
 }
 
-//Tests multiple Labels in a single program
-void testMultipleLabels(){
-    string source = "BRA Start\nx DAT 5\nStart LDA x\nBRA end\nend HLT";
-    Lexer lexer(source);
-    vector<Token> tokens = lexer.tokenize();
-    Parser parser(tokens);
-    vector<ParsedStatement> statements = parser.parse();
-    Assembler assembler(statements);
-    vector<AssembledInstruction> program = assembler.assemble();
-
-    assertTrue(program.size() == 5, "Expected 5 assembled instructions");
-    assertTrue(program[0].operand.value() == 2, "Label should be resolved to 2");
-    assertTrue(program[2].operand.value() == 1, "Label should be resolved to 1");
-    assertTrue(program[4].operand.value() == 4, "Label should resolve to 4");
-
-}
-
 //Tests DAT 
 void testDat(){
     string source = "x DAT 1\n y DAT 67\n z DAT -127\n a DAT";
@@ -135,6 +118,7 @@ void testDat(){
     assertTrue(!program[3].operand.has_value(), "Fourth DAT should have no operand");
 }
 
+// Tests multiple labels
 void testMultipleLabels(){
     string source = "BRA Start\nx DAT 5\nStart LDA x\nBRA end\nend HLT";
     Lexer lexer(source);
