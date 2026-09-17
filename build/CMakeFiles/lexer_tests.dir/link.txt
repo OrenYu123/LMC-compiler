@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/lexer_tests.dir/tests/lexer_tests.cpp.o CMakeFiles/lexer_tests.dir/src/lexer/lexer.cpp.o -o lexer_tests 

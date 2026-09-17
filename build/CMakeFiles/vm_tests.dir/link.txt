@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/vm_tests.dir/tests/vm_tests.cpp.o CMakeFiles/vm_tests.dir/src/lexer/lexer.cpp.o CMakeFiles/vm_tests.dir/src/parser/parser.cpp.o CMakeFiles/vm_tests.dir/src/assembler/assembler.cpp.o CMakeFiles/vm_tests.dir/src/vm/vm.cpp.o -o vm_tests 
