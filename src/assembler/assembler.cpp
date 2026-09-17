@@ -16,6 +16,7 @@ vector<AssembledInstruction> Assembler::assemble(){
 }
 
 void Assembler::firstPass(){
+    if(statements.size() > 128){throwAssemblyError("Program cannot contain more than 128 statements.");}
     for(int address = 0; address < statements.size(); address++){
         const ParsedStatement& statement = statements[address];
         if(statement.label.has_value()){defineLabel(*statement.label, address);}
@@ -62,7 +63,7 @@ int Assembler::resolveOperand(const Token& operand) const{
     else if(operand.type==TokenType::Identifier){
         auto it = labels.find(operand.value);
         if(it==labels.end()){
-            throwAssemblyError("Undefined Label '" + operand.value + "'.", operand);
+            throwAssemblyError("Undefined label '" + operand.value + "'.", operand);
         }
         address = it->second;
     }
@@ -83,4 +84,7 @@ void Assembler::validateDAT(const ParsedInstruction& instruction) const{
 
 void Assembler::throwAssemblyError(const string& message, const Token& token) const{
     throw runtime_error("Assembly error at line " + to_string(token.line) + ", column " + to_string(token.column) + ": " + message);
+}
+void Assembler::throwAssemblyError(const string& message) const{
+    throw runtime_error("Assembly error: " + message);
 }

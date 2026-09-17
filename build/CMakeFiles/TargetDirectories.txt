@@ -1,3 +1,4 @@
+/home/orenyu/code/C++/LMC compiler/build/CMakeFiles/lmc.dir
 /home/orenyu/code/C++/LMC compiler/build/CMakeFiles/lexer_tests.dir
 /home/orenyu/code/C++/LMC compiler/build/CMakeFiles/parser_tests.dir
 /home/orenyu/code/C++/LMC compiler/build/CMakeFiles/assembler_tests.dir

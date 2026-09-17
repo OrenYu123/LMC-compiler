@@ -117,6 +117,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named lmc
+
+# Build rule for target.
+lmc: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lmc
+.PHONY : lmc
+
+# fast build rule for target.
+lmc/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/build
+.PHONY : lmc/fast
+
+#=============================================================================
 # Target rules for targets named lexer_tests
 
 # Build rule for target.
@@ -173,6 +186,7 @@ src/assembler/assembler.o: src/assembler/assembler.cpp.o
 
 # target to build an object file
 src/assembler/assembler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/assembler/assembler.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assembler_tests.dir/build.make CMakeFiles/assembler_tests.dir/src/assembler/assembler.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/assembler/assembler.cpp.o
 .PHONY : src/assembler/assembler.cpp.o
@@ -182,6 +196,7 @@ src/assembler/assembler.i: src/assembler/assembler.cpp.i
 
 # target to preprocess a source file
 src/assembler/assembler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/assembler/assembler.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assembler_tests.dir/build.make CMakeFiles/assembler_tests.dir/src/assembler/assembler.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/assembler/assembler.cpp.i
 .PHONY : src/assembler/assembler.cpp.i
@@ -191,6 +206,7 @@ src/assembler/assembler.s: src/assembler/assembler.cpp.s
 
 # target to generate assembly for a file
 src/assembler/assembler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/assembler/assembler.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assembler_tests.dir/build.make CMakeFiles/assembler_tests.dir/src/assembler/assembler.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/assembler/assembler.cpp.s
 .PHONY : src/assembler/assembler.cpp.s
@@ -200,6 +216,7 @@ src/lexer/lexer.o: src/lexer/lexer.cpp.o
 
 # target to build an object file
 src/lexer/lexer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/lexer/lexer.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexer_tests.dir/build.make CMakeFiles/lexer_tests.dir/src/lexer/lexer.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/lexer/lexer.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assembler_tests.dir/build.make CMakeFiles/assembler_tests.dir/src/lexer/lexer.cpp.o
@@ -211,6 +228,7 @@ src/lexer/lexer.i: src/lexer/lexer.cpp.i
 
 # target to preprocess a source file
 src/lexer/lexer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/lexer/lexer.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexer_tests.dir/build.make CMakeFiles/lexer_tests.dir/src/lexer/lexer.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/lexer/lexer.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assembler_tests.dir/build.make CMakeFiles/assembler_tests.dir/src/lexer/lexer.cpp.i
@@ -222,17 +240,43 @@ src/lexer/lexer.s: src/lexer/lexer.cpp.s
 
 # target to generate assembly for a file
 src/lexer/lexer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/lexer/lexer.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lexer_tests.dir/build.make CMakeFiles/lexer_tests.dir/src/lexer/lexer.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/lexer/lexer.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assembler_tests.dir/build.make CMakeFiles/assembler_tests.dir/src/lexer/lexer.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/lexer/lexer.cpp.s
 .PHONY : src/lexer/lexer.cpp.s
 
+src/main.o: src/main.cpp.o
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
+
+src/main.i: src/main.cpp.i
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
+
+src/main.s: src/main.cpp.s
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
+
 src/parser/parser.o: src/parser/parser.cpp.o
 .PHONY : src/parser/parser.o
 
 # target to build an object file
 src/parser/parser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/parser/parser.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/parser/parser.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assembler_tests.dir/build.make CMakeFiles/assembler_tests.dir/src/parser/parser.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/parser/parser.cpp.o
@@ -243,6 +287,7 @@ src/parser/parser.i: src/parser/parser.cpp.i
 
 # target to preprocess a source file
 src/parser/parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/parser/parser.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/parser/parser.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assembler_tests.dir/build.make CMakeFiles/assembler_tests.dir/src/parser/parser.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/parser/parser.cpp.i
@@ -253,6 +298,7 @@ src/parser/parser.s: src/parser/parser.cpp.s
 
 # target to generate assembly for a file
 src/parser/parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/parser/parser.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/src/parser/parser.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/assembler_tests.dir/build.make CMakeFiles/assembler_tests.dir/src/parser/parser.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/parser/parser.cpp.s
@@ -263,6 +309,7 @@ src/vm/vm.o: src/vm/vm.cpp.o
 
 # target to build an object file
 src/vm/vm.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/vm/vm.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/vm/vm.cpp.o
 .PHONY : src/vm/vm.cpp.o
 
@@ -271,6 +318,7 @@ src/vm/vm.i: src/vm/vm.cpp.i
 
 # target to preprocess a source file
 src/vm/vm.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/vm/vm.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/vm/vm.cpp.i
 .PHONY : src/vm/vm.cpp.i
 
@@ -279,6 +327,7 @@ src/vm/vm.s: src/vm/vm.cpp.s
 
 # target to generate assembly for a file
 src/vm/vm.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/src/vm/vm.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/src/vm/vm.cpp.s
 .PHONY : src/vm/vm.cpp.s
 
@@ -388,6 +437,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... assembler_tests"
 	@echo "... lexer_tests"
+	@echo "... lmc"
 	@echo "... parser_tests"
 	@echo "... vm_tests"
 	@echo "... src/assembler/assembler.o"
@@ -396,6 +446,9 @@ help:
 	@echo "... src/lexer/lexer.o"
 	@echo "... src/lexer/lexer.i"
 	@echo "... src/lexer/lexer.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 	@echo "... src/parser/parser.o"
 	@echo "... src/parser/parser.i"
 	@echo "... src/parser/parser.s"

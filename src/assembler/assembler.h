@@ -26,6 +26,7 @@ class Assembler{
         void defineLabel(const Token& label, int address);
         void validateDAT(const ParsedInstruction& instruction) const;
         
+        void throwAssemblyError(const string& message) const;
         void throwAssemblyError(
             const string& message,
             const Token& token

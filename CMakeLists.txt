@@ -10,11 +10,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Main program
-# add_executable(miniasm
-#     src/main.cpp
-#     src/lexer/lexer.cpp
-# )
-
+add_executable(lmc
+    src/main.cpp
+    src/lexer/lexer.cpp
+    src/parser/parser.cpp
+    src/assembler/assembler.cpp
+    src/vm/vm.cpp
+)
 # Lexer tests
 add_executable(lexer_tests
     tests/lexer_tests.cpp

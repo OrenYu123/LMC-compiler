@@ -43,6 +43,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/lmc.dir/DependInfo.cmake"
   "CMakeFiles/lexer_tests.dir/DependInfo.cmake"
   "CMakeFiles/parser_tests.dir/DependInfo.cmake"
   "CMakeFiles/assembler_tests.dir/DependInfo.cmake"

@@ -1,0 +1,9 @@
+INP
+STA x
+loop SUB one
+OUT
+BRZ end
+BRP loop
+end HLT
+x DAT
+one DAT 1

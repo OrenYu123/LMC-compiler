@@ -63,6 +63,7 @@ CMAKE_BINARY_DIR = "/home/orenyu/code/C++/LMC compiler/build"
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/lmc.dir/all
 all: CMakeFiles/lexer_tests.dir/all
 all: CMakeFiles/parser_tests.dir/all
 all: CMakeFiles/assembler_tests.dir/all
@@ -74,11 +75,38 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/lmc.dir/clean
 clean: CMakeFiles/lexer_tests.dir/clean
 clean: CMakeFiles/parser_tests.dir/clean
 clean: CMakeFiles/assembler_tests.dir/clean
 clean: CMakeFiles/vm_tests.dir/clean
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/lmc.dir
+
+# All Build rule for target.
+CMakeFiles/lmc.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" --progress-num=9,10,11,12,13,14 "Built target lmc"
+.PHONY : CMakeFiles/lmc.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/lmc.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" 6
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/lmc.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start "/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" 0
+.PHONY : CMakeFiles/lmc.dir/rule
+
+# Convenience name for target.
+lmc: CMakeFiles/lmc.dir/rule
+.PHONY : lmc
+
+# clean rule for target.
+CMakeFiles/lmc.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/lmc.dir/build.make CMakeFiles/lmc.dir/clean
+.PHONY : CMakeFiles/lmc.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/lexer_tests.dir
@@ -113,7 +141,7 @@ CMakeFiles/lexer_tests.dir/clean:
 CMakeFiles/parser_tests.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/parser_tests.dir/build.make CMakeFiles/parser_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" --progress-num=9,10,11,12 "Built target parser_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" --progress-num=15,16,17,18 "Built target parser_tests"
 .PHONY : CMakeFiles/parser_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -165,7 +193,7 @@ CMakeFiles/assembler_tests.dir/clean:
 CMakeFiles/vm_tests.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/vm_tests.dir/build.make CMakeFiles/vm_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" --progress-num=13,14,15,16,17,18 "Built target vm_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="/home/orenyu/code/C++/LMC compiler/build/CMakeFiles" --progress-num=19,20,21,22,23,24 "Built target vm_tests"
 .PHONY : CMakeFiles/vm_tests.dir/all
 
 # Build rule for subdir invocation for target.

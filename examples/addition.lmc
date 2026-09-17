@@ -1,0 +1,12 @@
+; Adds until gets 0
+
+loop INP
+BRZ end
+ADD sum
+STA sum
+BRA loop
+end LDA sum
+OUT
+HLT
+
+sum DAT 0

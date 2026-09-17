@@ -1,0 +1,7 @@
+INP
+STA x
+LDA x
+OUT
+HLT
+
+x DAT
