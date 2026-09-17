@@ -1,0 +1,41 @@
+#ifndef VM_H
+#define VM_H
+
+#include "../assembler/assembler.h"
+#include <bits/stdc++.h>
+
+using namespace std;
+
+class VM{
+    public:
+        explicit VM(const vector<AssembledInstruction>& program);
+
+        void run();
+    private:
+        const vector<AssembledInstruction>& program;
+        vector<int> memory;//capped at 128 items
+        int acc = 0;//accumulator
+        int pc = 0;//program counter
+        bool hlt = false;
+
+        //general execute
+        void executeInstruction(const AssembledInstruction& instruction);
+
+        //execute per instruction
+        void executeSTA(int address);
+        void executeLDA(int address);
+        void executeADD(int address);
+        void executeSUB(int address);
+        void executeBRA(int address);
+        void executeBRZ(int address);
+        void executeBRP(int address);
+        void executeINP();
+        void executeOUT();
+        void executeHLT();
+
+        void validateAddress(int address) const;
+        void throwVMError(const string& message) const;
+
+};
+
+#endif
