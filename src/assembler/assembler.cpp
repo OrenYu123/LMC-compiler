@@ -33,12 +33,20 @@ void Assembler::defineLabel(const Token& label, int address){
 AssembledInstruction Assembler::assembleStatement(const ParsedStatement& statement){
     const ParsedInstruction& instruction = statement.instruction;
 
-    if(instruction.opcode==TokenType::DAT){validateDAT(instruction);}//DAT behaves differently
+    if(instruction.opcode==TokenType::DAT){
+        validateDAT(instruction);
+        if(!instruction.operand.has_value()){
+            return {instruction.opcode, nullopt};//indicates optional var doesn't have a value
+        }
+        return {
+            instruction.opcode,
+            stoi(instruction.operand->value)
+        };
+    }//DAT behaves differently
 
     if(!instruction.operand.has_value()){
         return {instruction.opcode, nullopt};//indicates optional var doesn't have a value
     }
-
     int operand = resolveOperand(*instruction.operand);
     return{
         instruction.opcode,
@@ -59,7 +67,7 @@ int Assembler::resolveOperand(const Token& operand) const{
         address = it->second;
     }
     else{throwAssemblyError("Invalid operand '" + operand.value + "'.",operand);}
-    if(address<0 || address > 127){throwAssemblyError("Adress must be between 0 to 127", operand);}
+    if(address<0 || address > 127){throwAssemblyError("Address must be between 0 to 127", operand);}
     return address;
 }
 

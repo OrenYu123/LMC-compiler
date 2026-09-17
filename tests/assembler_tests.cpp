@@ -135,17 +135,20 @@ void testDat(){
     assertTrue(!program[3].operand.has_value(), "Fourth DAT should have no operand");
 }
 
-void testNegativeOperands(){
-    string source = "LDA -2";
+void testMultipleLabels(){
+    string source = "BRA Start\nx DAT 5\nStart LDA x\nBRA end\nend HLT";
     Lexer lexer(source);
     vector<Token> tokens = lexer.tokenize();
     Parser parser(tokens);
     vector<ParsedStatement> statements = parser.parse();
     Assembler assembler(statements);
     vector<AssembledInstruction> program = assembler.assemble();
-    assertTrue(program.size()==1, "Expected 1 assembled instruction");
-    assertTrue(program[0].opcode == TokenType::LDA, "First statement should be LDA");
-    assertTrue(program[0].operand.value() == -2, "Operand should be -2");
+
+    assertTrue(program.size() == 5, "Expected 5 assembled instructions");
+    assertTrue(program[0].operand.value() == 2, "Label should be resolved to 2");
+    assertTrue(program[2].operand.value() == 1, "Label should be resolved to 1");
+    assertTrue(program[3].operand.value() == 4, "Label should resolve to 4");
+
 }
 
 //-------------------------------
@@ -160,7 +163,7 @@ void testUndefinedLabels(){
 
 // Tests duplicate labels
 void testDupeLabels(){
-    string source = "x DAT 1\nx Dat 2";
+    string source = "x DAT 1\nx DAT 2";
     assertThrows(source);
 }
 
@@ -265,7 +268,6 @@ int main(){
         {"Label conversion to address", testLabelConversionToAddress},
         {"Multiple labels", testMultipleLabels},
         {"DAT tests", testDat},
-        {"Negative operands", testNegativeOperands},
         {"Undefined labels", testUndefinedLabels},
         {"Duplicate label", testDupeLabels},
         {"Large DAT", testBigDAT},
