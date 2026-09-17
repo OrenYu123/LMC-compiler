@@ -46,4 +46,5 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/lexer_tests.dir/DependInfo.cmake"
   "CMakeFiles/parser_tests.dir/DependInfo.cmake"
   "CMakeFiles/assembler_tests.dir/DependInfo.cmake"
+  "CMakeFiles/vm_tests.dir/DependInfo.cmake"
   )

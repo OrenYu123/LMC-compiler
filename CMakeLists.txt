@@ -35,3 +35,12 @@ add_executable(assembler_tests
     src/parser/parser.cpp
     src/assembler/assembler.cpp
 )
+
+# VM tests
+add_executable(vm_tests
+    tests/vm_tests.cpp
+    src/lexer/lexer.cpp
+    src/parser/parser.cpp
+    src/assembler/assembler.cpp
+    src/vm/vm.cpp
+)
