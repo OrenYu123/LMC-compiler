@@ -27,3 +27,11 @@ add_executable(parser_tests
     src/lexer/lexer.cpp
     src/parser/parser.cpp
 )
+
+# Assembler tests
+add_executable(assembler_tests
+    tests/assembler_tests.cpp
+    src/lexer/lexer.cpp
+    src/parser/parser.cpp
+    src/assembler/assembler.cpp
+)
