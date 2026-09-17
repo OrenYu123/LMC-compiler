@@ -111,7 +111,10 @@ void VM::executeBRZ(int address){
 
 //IO
 void VM::executeINP(){
-    cin >> acc;
+    int input;
+    cin >> input;
+    if(input < -128 || input > 127){throwVMError("Input must be between -128 to 127");}
+    acc = input;
 }
 void VM::executeOUT(){
     cout << acc << '\n';
