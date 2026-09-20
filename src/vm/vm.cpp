@@ -1,10 +1,10 @@
 #include "vm.h"
-
+#include "../common/LMC_constants.h"
 #include <iostream>
 #include <stdexcept>
 
 VM::VM(const std::vector<AssembledInstruction>& program)
-    : program(program), memory(128, 0) {
+    : program(program), memory(LMC::MEMORY_SIZE, 0) {
     initializeMemory();
 }
 
@@ -148,8 +148,8 @@ void VM::executeINP() {
     int input;
     std::cin >> input;
 
-    if (input < -128 || input > 127) {
-        throwVMError("Input must be between -128 and 127.");
+    if (input < LMC::MIN_VALUE || input > LMC::MAX_VALUE) {
+        throwVMError("Input must be between " + std::to_string(LMC::MIN_VALUE) + " and " + std::to_string(LMC::MAX_VALUE) + ".");
     }
 
     acc = input;
@@ -168,12 +168,12 @@ void VM::executeHLT() {
 // Helper functions
 
 int VM::wrapValue(int value) const {
-    value %= 256;
+    value %= LMC::VALUE_RANGE;
 
-    if (value > 127) {
-        value -= 256;
-    } else if (value < -128) {
-        value += 256;
+    if (value > LMC::MAX_VALUE) {
+        value -= LMC::VALUE_RANGE;
+    } else if (value < LMC::MIN_VALUE) {
+        value += LMC::VALUE_RANGE;
     }
 
     return value;

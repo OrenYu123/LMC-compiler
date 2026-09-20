@@ -1,5 +1,5 @@
 #include "assembler.h"
-
+#include "../common/LMC_constants.h"
 #include <stdexcept>
 #include <string>
 
@@ -21,7 +21,7 @@ std::vector<AssembledInstruction> Assembler::assemble() {
 }
 
 void Assembler::firstPass() {
-    if (statements.size() > 128) {
+    if (statements.size() > LMC::MEMORY_SIZE) {
         throwAssemblyError(
             "Program cannot contain more than 128 statements."
         );
@@ -111,9 +111,9 @@ int Assembler::resolveOperand(const Token& operand) const {
         );
     }
 
-    if (address < 0 || address > 127) {
+    if (address < 0 || address >= LMC::MEMORY_SIZE) {
         throwAssemblyError(
-            "Address must be between 0 and 127.",
+            "Address must be between 0 and" + std::to_string(LMC::MEMORY_SIZE-1) + ".",
             operand
         );
     }
@@ -131,7 +131,7 @@ void Assembler::validateDAT(
     const Token& value = *instruction.operand;
     int number = std::stoi(value.value);
 
-    if (number < -128 || number > 127) {
+    if (number < LMC::MIN_VALUE || number > LMC::MAX_VALUE) {
         throwAssemblyError(
             "DAT value must be between -128 and 127.",
             value

@@ -216,9 +216,9 @@ void testInvalidCharacter(){
                     "@"; // Invalid character
     Lexer lexer(source);
     try {
-        vector<Token> tokens = lexer.tokenize();
+        lexer.tokenize();
     } catch (const runtime_error& e) {
-        cout << "Test passed: Invalid character handling. Caught exception: " << e.what() << endl;
+        cout << "Test passed: Invalid character handling."  << endl;
         return; // Test passed, exit the function
     }
     throw runtime_error("Expected exception for invalid character, but none was thrown."); // If we reach here, the test failed
