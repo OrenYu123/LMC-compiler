@@ -1,0 +1,27 @@
+; the program receives a value and returns its absolute value
+INP
+STA val
+SUB overflow
+BRZ end3
+LDA val
+BRP end
+; now we know it's negative
+loop LDA ans
+ADD one
+STA ans
+LDA val
+ADD one
+STA val
+BRZ end2
+BRA loop
+end2 LDA ans
+end OUT
+HLT
+end3 LDA out
+OUT
+HLT
+val DAT
+one DAT 1
+ans DAT 0
+overflow DAT -128
+out DAT -1

@@ -1,0 +1,27 @@
+; Multiplies two positive integers. If overflows, returns -1
+start INP
+BRZ end
+STA x
+INP 
+BRZ end
+STA y
+loop LDA product
+ADD x
+BRP jump
+BRA fail
+jump STA product
+LDA y
+ADD overflow
+STA y
+BRZ end
+BRA loop
+fail LDA overflow
+OUT
+HLT
+end LDA product
+OUT
+HLT
+x DAT
+y DAT
+product DAT 0 
+overflow DAT -1
