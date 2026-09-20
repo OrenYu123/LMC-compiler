@@ -23,7 +23,9 @@ std::vector<AssembledInstruction> Assembler::assemble() {
 void Assembler::firstPass() {
     if (statements.size() > LMC::MEMORY_SIZE) {
         throwAssemblyError(
-            "Program cannot contain more than 128 statements."
+            "Program cannot contain more than " + 
+            std::to_string(LMC::MEMORY_SIZE) + 
+            " statements."
         );
     }
 
@@ -113,7 +115,9 @@ int Assembler::resolveOperand(const Token& operand) const {
 
     if (address < 0 || address >= LMC::MEMORY_SIZE) {
         throwAssemblyError(
-            "Address must be between 0 and" + std::to_string(LMC::MEMORY_SIZE-1) + ".",
+            "Address must be between 0 and " 
+            + std::to_string(LMC::MEMORY_SIZE-1) 
+            + ".",
             operand
         );
     }
@@ -133,7 +137,12 @@ void Assembler::validateDAT(
 
     if (number < LMC::MIN_VALUE || number > LMC::MAX_VALUE) {
         throwAssemblyError(
-            "DAT value must be between -128 and 127.",
+            "DAT value must be between " +
+            std::to_string(LMC::MIN_VALUE) +  
+            " and " + 
+            std::to_string(LMC::MAX_VALUE) + 
+            "."
+            ,
             value
         );
     }

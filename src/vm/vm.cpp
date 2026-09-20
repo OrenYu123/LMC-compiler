@@ -11,7 +11,11 @@ VM::VM(const std::vector<AssembledInstruction>& program)
 void VM::run() {
     while (!hlt) {
         if (pc < 0 || pc >= static_cast<int>(program.size())) {
-            throwVMError("PC out of bounds.");
+            throwVMError(
+                "Program counter " + 
+                std::to_string(pc) + 
+                " is out of bounds."
+            );
         }
 
         const AssembledInstruction& instruction = program[pc];
@@ -86,10 +90,16 @@ void VM::executeInstruction(
             break;
 
         case TokenType::DAT:
-            throwVMError("Attempted to execute DAT");
+            throwVMError("Attempted to execute DAT at address " + 
+                std::to_string(pc) + 
+                "."
+            );
 
         default:
-            throwVMError("Unknown instruction.");
+            throwVMError("Unknown instruction at address " + 
+            std::to_string(pc) + 
+            "."
+            );
     }
 }
 
@@ -146,10 +156,16 @@ void VM::executeBRZ(int address) {
 
 void VM::executeINP() {
     int input;
-    std::cin >> input;
+    if(!(std::cin >> input)){
+        throwVMError("Input must be an integer.");
+    }
 
     if (input < LMC::MIN_VALUE || input > LMC::MAX_VALUE) {
-        throwVMError("Input must be between " + std::to_string(LMC::MIN_VALUE) + " and " + std::to_string(LMC::MAX_VALUE) + ".");
+        throwVMError("Input must be between " + 
+            std::to_string(LMC::MIN_VALUE) + 
+            " and " 
+            + std::to_string(LMC::MAX_VALUE) + 
+            ".");
     }
 
     acc = input;

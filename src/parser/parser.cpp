@@ -64,7 +64,7 @@ ParsedInstruction Parser::parseInstruction() {
         throwSyntaxError(
             "Expected an instruction, got '" +
             opcodeToken.value +
-            "'"
+            "'."
         );
     }
 
@@ -91,7 +91,9 @@ ParsedInstruction Parser::parseInstruction() {
         }
 
         if (current().type != TokenType::Number) {
-            throwSyntaxError("DAT expects a number or no value");
+            throwSyntaxError(
+                "DAT expects a number or no value."
+            );
         }
 
         return {
@@ -107,7 +109,7 @@ ParsedInstruction Parser::parseInstruction() {
             throwSyntaxError(
                 "Instruction '" +
                 opcodeToken.value +
-                "' requires an operand"
+                "' requires an operand."
             );
         }
 
@@ -116,7 +118,7 @@ ParsedInstruction Parser::parseInstruction() {
             throwSyntaxError(
                 "Instruction '" +
                 opcodeToken.value +
-                "' requires an identifier or number as an operand"
+                "' requires an identifier or number as an operand."
             );
         }
 
@@ -126,7 +128,7 @@ ParsedInstruction Parser::parseInstruction() {
         };
     }
 
-    throwSyntaxError("Unknown instruction.");
+    throwSyntaxError("Invalid instruction.");
     return {};
 }
 
@@ -176,7 +178,7 @@ void Parser::expectEndOfLine() {
         throwSyntaxError(
             "Unexpected token '" +
             current().value +
-            "'."
+            "' after instruction."
         );
     }
 }
