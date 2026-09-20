@@ -2,68 +2,76 @@
 #include "../src/parser/parser.h"
 #include "../src/assembler/assembler.h"
 #include "../src/vm/vm.h"
+#include "../src/common/LMC_constants.h"
 
-#include <bits/stdc++.h>
-
-using namespace std;
+#include <functional>
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
 
 //--------------------
-//Test Utils
+// Test Utils
 //--------------------
 
-
-void assertTrue(bool condition, const string& message){
-    if(!condition){
-        throw runtime_error(message);
+void assertTrue(bool condition, const std::string& message) {
+    if (!condition) {
+        throw std::runtime_error(message);
     }
 }
 
-void assertThrow(const string& source){
+void assertThrow(const std::string& source) {
     Lexer lexer(source);
-    vector<Token> tokens = lexer.tokenize();
+    std::vector<Token> tokens = lexer.tokenize();
 
     Parser parser(tokens);
-    vector<ParsedStatement> statements = parser.parse();
+    std::vector<ParsedStatement> statements = parser.parse();
 
     Assembler assembler(statements);
-    vector<AssembledInstruction> program = assembler.assemble();
+    std::vector<AssembledInstruction> program = assembler.assemble();
 
     VM vm(program);
 
     bool thrown = false;
 
-    try{
+    try {
         vm.run();
     }
-    catch(const exception&){
+    catch (const std::exception&) {
         thrown = true;
     }
+
     assertTrue(thrown, "Expected VM to throw an error");
 }
 
-string runner(const string& source){
+std::string runner(const std::string& source) {
     Lexer lexer(source);
-    vector<Token> tokens = lexer.tokenize();
+    std::vector<Token> tokens = lexer.tokenize();
 
     Parser parser(tokens);
-    vector<ParsedStatement> statements = parser.parse();
+    std::vector<ParsedStatement> statements = parser.parse();
 
     Assembler assembler(statements);
-    vector<AssembledInstruction> program = assembler.assemble();
+    std::vector<AssembledInstruction> program = assembler.assemble();
 
     VM vm(program);
 
-    streambuf* originalCout = cout.rdbuf();
-    stringstream output;
-    cout.rdbuf(output.rdbuf());//stores IO in the output stream
-    try{
+    std::streambuf* originalCout = std::cout.rdbuf();
+
+    std::stringstream output;
+    std::cout.rdbuf(output.rdbuf());
+
+    try {
         vm.run();
     }
-    catch(...){
-        cout.rdbuf(originalCout);
+    catch (...) {
+        std::cout.rdbuf(originalCout);
         throw;
     }
-    cout.rdbuf(originalCout);
+
+    std::cout.rdbuf(originalCout);
 
     return output.str();
 }
@@ -71,154 +79,396 @@ string runner(const string& source){
 //-----------------
 // Batch 1
 //-----------------
-void testLDA(){
-    string source = "LDA x\n""OUT\n""HLT\n""x DAT 42";
-    string output = runner(source);
-    assertTrue(output=="42\n", "LDA should load value from memory");
+
+void testLDA() {
+    std::string source =
+        "LDA x\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 42";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "42\n",
+        "LDA should load value from memory"
+    );
 }
 
-void testHLT(){
-    string source = "LDA x\nOUT\nHLT\nLDA y\nOUT\nx DAT 5\ny DAT 1";
-    string output = runner(source);
-    assertTrue(output=="5\n","HLT should halt the program");
+void testHLT() {
+    std::string source =
+        "LDA x\n"
+        "OUT\n"
+        "HLT\n"
+        "LDA y\n"
+        "OUT\n"
+        "x DAT 5\n"
+        "y DAT 1";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "5\n",
+        "HLT should halt the program"
+    );
 }
 
-void testSTA(){
-    string source = "LDA x\n""STA y\n""LDA y\n""OUT\n""HLT\n""x DAT 42\n""y DAT 0";
+void testSTA() {
+    std::string source =
+        "LDA x\n"
+        "STA y\n"
+        "LDA y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 42\n"
+        "y DAT 0";
 
-    string output = runner(source);
-    assertTrue(output == "42\n", "STA should store the acc in memory");
-}
+    std::string output = runner(source);
 
-void testADD(){
-    string source = "LDA x\nADD y\nOUT\nHLT\nx DAT 1\ny DAT 2";
-    string output = runner(source);
-    assertTrue(output=="3\n","ADD should add the value in memory to the acc");
-}
-
-void testSUB(){
-    string source = "LDA x\nSUB y\nOUT\nHLT\nx DAT 5\ny DAT 2";
-    string output = runner(source);
-    assertTrue(output=="3\n","SUB should subtract the value in memory to the acc");
-}
-
-void testADDOverflow(){
-    string source = "LDA x\nADD y\nOUT\nHLT\nx DAT 67\ny DAT 69";
-    string output = runner(source);
-    assertTrue(output=="-120\n","ADD should account for overflow");
+    assertTrue(
+        output == "42\n",
+        "STA should store the accumulator in memory"
+    );
 }
 
-void testSUBOverflow(){
-    string source = "LDA x\nSUB y\nOUT\nHLT\nx DAT -120\ny DAT 9";
-    string output = runner(source);
-    assertTrue(output=="127\n","SUB should account for overflow");
+void testADD() {
+    std::string source =
+        "LDA x\n"
+        "ADD y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 1\n"
+        "y DAT 2";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "3\n",
+        "ADD should add the value in memory to the accumulator"
+    );
 }
 
-void testBRA(){
-    string source = "BRA skip\nLDA x\nOUT\nskip LDA y\nOUT\nHLT\nx DAT 6\ny DAT 7";
-    string output = runner(source);
-    assertTrue(output=="7\n", "BRA should branch to the given address");
+void testSUB() {
+    std::string source =
+        "LDA x\n"
+        "SUB y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 5\n"
+        "y DAT 2";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "3\n",
+        "SUB should subtract the value in memory from the accumulator"
+    );
 }
-void testBRZBranch(){
-    string source =
-        "LDA zero\nBRZ output\nLDA wrong\nOUT\nHLT\noutput LDA correct\nOUT\nHLT\nzero DAT 0\nwrong DAT 10\ncorrect DAT 20";
-    string output = runner(source);
-    assertTrue(output == "20\n","BRZ should branch when accumulator is zero");
+
+void testADDOverflow() {
+    std::string source =
+        "LDA x\n"
+        "ADD y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT " + std::to_string(LMC::MAX_VALUE) + "\n"
+        "y DAT " + std::to_string(LMC::MAX_VALUE);
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "-2\n",
+        "ADD should account for overflow"
+    );
 }
-void testBRZNoBranch(){
-    string source = "LDA wrong\nBRZ output\nLDA correct\noutput OUT\nHLT\ncorrect DAT 6\nwrong DAT 7";
-    string output = runner(source);
-    assertTrue(output=="6\n", "BRZ shouldn't branch when acc isn't zero");
+
+void testSUBOverflow() {
+    std::string source =
+        "LDA x\n"
+        "SUB y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT " + std::to_string(LMC::MIN_VALUE) + "\n"
+        "y DAT 1";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == std::to_string(LMC::MAX_VALUE) + "\n",
+        "SUB should account for overflow"
+    );
 }
-void testBRPBranch(){
-    string source = "LDA positive\nBRP output\nLDA wrong\nOUT\nHLT\noutput LDA correct\nOUT\nHLT\npositive DAT 5\nwrong DAT 10\ncorrect DAT 20";
-    string output = runner(source);
-    assertTrue(output=="20\n", "BRP should branch when acc isn't negative");
+
+void testBRA() {
+    std::string source =
+        "BRA skip\n"
+        "LDA x\n"
+        "OUT\n"
+        "skip LDA y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 6\n"
+        "y DAT 7";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "7\n",
+        "BRA should branch to the given address"
+    );
 }
-void testBRPNoBranch(){
-    string source = "LDA negative\nBRP skip\nLDA correct\nOUT\nHLT\nskip LDA wrong\nOUT\nHLT\nnegative DAT -1\ncorrect DAT 20\nwrong DAT 10";
-    string output = runner(source);
-    assertTrue(output=="20\n", "BRP shouldn't branch when acc is negative");
+
+void testBRZBranch() {
+    std::string source =
+        "LDA zero\n"
+        "BRZ output\n"
+        "LDA wrong\n"
+        "OUT\n"
+        "HLT\n"
+        "output LDA correct\n"
+        "OUT\n"
+        "HLT\n"
+        "zero DAT 0\n"
+        "wrong DAT 10\n"
+        "correct DAT 20";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "20\n",
+        "BRZ should branch when accumulator is zero"
+    );
+}
+
+void testBRZNoBranch() {
+    std::string source =
+        "LDA wrong\n"
+        "BRZ output\n"
+        "LDA correct\n"
+        "output OUT\n"
+        "HLT\n"
+        "correct DAT 6\n"
+        "wrong DAT 7";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "6\n",
+        "BRZ shouldn't branch when accumulator isn't zero"
+    );
+}
+
+void testBRPBranch() {
+    std::string source =
+        "LDA positive\n"
+        "BRP output\n"
+        "LDA wrong\n"
+        "OUT\n"
+        "HLT\n"
+        "output LDA correct\n"
+        "OUT\n"
+        "HLT\n"
+        "positive DAT 5\n"
+        "wrong DAT 10\n"
+        "correct DAT 20";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "20\n",
+        "BRP should branch when accumulator isn't negative"
+    );
+}
+
+void testBRPNoBranch() {
+    std::string source =
+        "LDA negative\n"
+        "BRP skip\n"
+        "LDA correct\n"
+        "OUT\n"
+        "HLT\n"
+        "skip LDA wrong\n"
+        "OUT\n"
+        "HLT\n"
+        "negative DAT -1\n"
+        "correct DAT 20\n"
+        "wrong DAT 10";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "20\n",
+        "BRP shouldn't branch when accumulator is negative"
+    );
 }
 
 //-----------------------
 // Batch 2
 //-----------------------
 
-void testINP(){
-    string source = "INP\nOUT\nHLT";
-    streambuf* originalCin = cin.rdbuf();
-    stringstream input("42\n");
-    cin.rdbuf(input.rdbuf());
-    string output = runner(source);
-    cin.rdbuf(originalCin);
-    assertTrue(output == "42\n","INP should store input in the accumulator");
+void testINP() {
+    std::string source =
+        "INP\n"
+        "OUT\n"
+        "HLT";
+
+    std::streambuf* originalCin = std::cin.rdbuf();
+
+    std::stringstream input("42\n");
+    std::cin.rdbuf(input.rdbuf());
+
+    std::string output;
+
+    try {
+        output = runner(source);
+    }
+    catch (...) {
+        std::cin.rdbuf(originalCin);
+        throw;
+    }
+
+    std::cin.rdbuf(originalCin);
+
+    assertTrue(
+        output == "42\n",
+        "INP should store input in the accumulator"
+    );
 }
 
-void testNegativeLDA(){
-    string source = "LDA x\nOUT\nHLT\nx DAT -50";
-    string output = runner(source);
-    assertTrue(output=="-50\n","LDA should load negative numbers within the range");
+void testNegativeLDA() {
+    std::string source =
+        "LDA x\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT -50";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "-50\n",
+        "LDA should load negative numbers within the range"
+    );
 }
 
-void testBRPZero(){
-    string source = "LDA zero\nBRP positive\nLDA wrong\nOUT\nHLT\npositive LDA correct\nOUT\nHLT\nzero DAT 0\nwrong DAT 10\ncorrect DAT 20";
-    string output = runner(source);
-    assertTrue(output=="20\n", "BRP should branch when acc is zero");
+void testBRPZero() {
+    std::string source =
+        "LDA zero\n"
+        "BRP positive\n"
+        "LDA wrong\n"
+        "OUT\n"
+        "HLT\n"
+        "positive LDA correct\n"
+        "OUT\n"
+        "HLT\n"
+        "zero DAT 0\n"
+        "wrong DAT 10\n"
+        "correct DAT 20";
+
+    std::string output = runner(source);
+
+    assertTrue(
+        output == "20\n",
+        "BRP should branch when accumulator is zero"
+    );
 }
 
-void testMultADDOverflow(){
-    string source =
-        "LDA x\nADD y\nADD y\nOUT\nHLT\nx DAT 127\ny DAT 127";
-    string output = runner(source);
+void testMultADDOverflow() {
+    std::string source =
+        "LDA x\n"
+        "ADD y\n"
+        "ADD y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT " + std::to_string(LMC::MAX_VALUE) + "\n"
+        "y DAT " + std::to_string(LMC::MAX_VALUE);
+
+    std::string output = runner(source);
+
     // 127 + 127 = 254 -> -2
     // -2 + 127 = 125
-    assertTrue(output == "125\n","ADD should correctly handle multiple overflows");
+
+    assertTrue(
+        output == "125\n",
+        "ADD should correctly handle multiple overflows"
+    );
 }
 
-void testMultSUBOverflow(){
-    string source =
-        "LDA x\nSUB y\nSUB y\nOUT\nHLT\nx DAT -128\ny DAT 127";
-    string output = runner(source);
+void testMultSUBOverflow() {
+    std::string source =
+        "LDA x\n"
+        "SUB y\n"
+        "SUB y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT " + std::to_string(LMC::MIN_VALUE) + "\n"
+        "y DAT " + std::to_string(LMC::MAX_VALUE);
+
+    std::string output = runner(source);
+
     // -128 - 127 = -255 -> 1
     // 1 - 127 = -126
-    assertTrue(output == "-126\n","SUB should correctly handle multiple overflows");
+
+    assertTrue(
+        output == "-126\n",
+        "SUB should correctly handle multiple overflows"
+    );
 }
 
-void testDATExecute(){
-    string source = "BRA data\nHLT\ndata DAT 42";
+void testDATExecute() {
+    std::string source =
+        "BRA data\n"
+        "HLT\n"
+        "data DAT 42";
+
     assertThrow(source);
 }
 
-void testPCOOB(){
-    string source = "BRA 127";
+void testPCOOB() {
+    std::string source =
+        "BRA " + std::to_string(LMC::MEMORY_SIZE - 1);
+
     assertThrow(source);
 }
 
-void testINPOverflow(){
-    string source = "INP\nHLT";
-    streambuf* originalCin = cin.rdbuf();
-    stringstream input("200\n");
-    cin.rdbuf(input.rdbuf());
+void testINPOverflow() {
+    std::string source =
+        "INP\n"
+        "HLT";
+
+    std::streambuf* originalCin = std::cin.rdbuf();
+
+    std::stringstream input(
+        std::to_string(LMC::MAX_VALUE + 1) + "\n"
+    );
+
+    std::cin.rdbuf(input.rdbuf());
+
     bool thrown = false;
-    try{
+
+    try {
         runner(source);
     }
-    catch(const exception&){
+    catch (const std::exception&) {
         thrown = true;
     }
-    cin.rdbuf(originalCin);
-    assertTrue(thrown, "INP should reject values above 127 and below -128");
+
+    std::cin.rdbuf(originalCin);
+
+    assertTrue(
+        thrown,
+        "INP should reject values outside the valid range"
+    );
 }
 
 //--------------------
-//Test runner
+// Test runner
 //--------------------
 
-int main(){
-    vector<pair<string, function<void()>>> tests = {
+int main() {
+    std::vector<std::pair<std::string, std::function<void()>>> tests = {
         {"LDA", testLDA},
         {"HLT", testHLT},
+        {"STA", testSTA},
         {"ADD", testADD},
         {"SUB", testSUB},
         {"ADD overflow", testADDOverflow},
@@ -235,24 +485,44 @@ int main(){
         {"Multiple SUB overflow", testMultSUBOverflow},
         {"Execute DAT", testDATExecute},
         {"OOB PC", testPCOOB},
-        {"Overflown input", testINPOverflow}
+        {"Overflow input", testINPOverflow}
     };
+
     int passed = 0;
     int failed = 0;
-    for(const auto& test : tests){
-        const string& name = test.first;
-        const function<void()>& fun = test.second;
-        try{
-            fun();
-            cout << "Passed " << name << '\n';
+
+    for (const auto& test : tests) {
+        const std::string& name = test.first;
+        const std::function<void()>& function = test.second;
+
+        try {
+            function();
+
+            std::cout
+                << "Passed "
+                << name
+                << '\n';
+
             passed++;
         }
-        catch(const exception& e){
-            cout << "Failed " << name << ": " << e.what() << '\n';
+        catch (const std::exception& e) {
+            std::cout
+                << "Failed "
+                << name
+                << ": "
+                << e.what()
+                << '\n';
+
             failed++;
         }
-        
     }
-    cout<< "\nTest passed: " << passed << ", Tests failed: " << failed << endl;
-    return failed ==0 ? 0 : 1;
+
+    std::cout
+        << "\nTests passed: "
+        << passed
+        << ", Tests failed: "
+        << failed
+        << '\n';
+
+    return failed == 0 ? 0 : 1;
 }

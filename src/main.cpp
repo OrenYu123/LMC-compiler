@@ -2,42 +2,45 @@
 #include "parser/parser.h"
 #include "assembler/assembler.h"
 #include "vm/vm.h"
-#include <bits/stdc++.h>
 
-using namespace std;
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <string>
+#include <vector>
 
-int main(int args, char* argv[]) {
+int main(int argc, char* argv[]) {
     
-    if(args!=2){
-        cerr << "Usage: little man's computer <file.lmc>\n";
+    if(argc!=2){
+        std::cerr << "Usage: little man's computer <file.lmc>\n";
         return 1;
     }
-    string filename = argv[1];
+    std::string filename = argv[1];
     if(filename.size()<4 || filename.substr(filename.size()-4) != ".lmc"){
-        cerr << "Error: input file must have an .lmc extension";
+        std::cerr << "Error: input file must have an .lmc extension";
         return 1;
     }
-    ifstream file(filename);
+    std::ifstream file(filename);
     if(!file.is_open()){
-        cerr << "Error: could not open file '" << filename << ".\n";
+        std::cerr << "Error: could not open file '" << filename << ".\n";
         return 1;
     }
-    string source((istreambuf_iterator<char>(file)),istreambuf_iterator<char>());
+    std::string source((std::istreambuf_iterator<char>(file)),std::istreambuf_iterator<char>());
     try{
         Lexer lexer(source);
-        vector<Token> tokens = lexer.tokenize();
+        std::vector<Token> tokens = lexer.tokenize();
 
         Parser parser(tokens);
-        vector<ParsedStatement> statements = parser.parse();
+        std::vector<ParsedStatement> statements = parser.parse();
 
         Assembler assembler(statements);
-        vector<AssembledInstruction> program = assembler.assemble();
+        std::vector<AssembledInstruction> program = assembler.assemble();
 
         VM vm(program);
         vm.run();
     }
-    catch(const exception& e){
-        cerr << e.what() << '\n';
+    catch(const std::exception& e){
+        std::cerr << e.what() << '\n';
         return 1;
     }
     return 0;
