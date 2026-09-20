@@ -1,43 +1,44 @@
-#ifndef PARSER_H//incase of mult definitons
+#ifndef PARSER_H
 #define PARSER_H
+
 #include "../lexer/lexer.h"
-#include <bits/stdc++.h>
 
-using namespace std;
+#include <optional>
+#include <string>
+#include <vector>
+#include <cstddef>
 
-//struct to use for instructions
-struct ParsedInstruction{
+struct ParsedInstruction {
     TokenType opcode;
-    optional<Token> operand;
+    std::optional<Token> operand;
 };
 
-//struct to use for label + instruction
-struct ParsedStatement{
-    optional<Token> label;
+struct ParsedStatement {
+    std::optional<Token> label;
     ParsedInstruction instruction;
 };
 
-class Parser{
-    public:
-        explicit Parser(const vector<Token>& tokens);
-        vector<ParsedStatement> parse();
-    private:
-        const vector<Token>& tokens;
-        size_t currentIndex = 0;
-        const Token& current() const;//So caller can't modify it (where ends in const)
-        const Token& peek() const;
-        const Token& advance();
+class Parser {
+public:
+    explicit Parser(const std::vector<Token>& tokens);
+    std::vector<ParsedStatement> parse();
 
-        ParsedStatement parseStatement();
-        ParsedInstruction parseInstruction();
+private:
+    const std::vector<Token>& tokens;
+    std::size_t currentIndex = 0;
 
-        bool isInstruction(TokenType type) const;
-        bool isMemoryInstruction(TokenType type) const;
+    const Token& current() const;
+    const Token& peek() const;
+    const Token& advance();
 
-        void expectEndOfLine();
-        void throwSyntaxError(const string& message) const;
+    ParsedStatement parseStatement();
+    ParsedInstruction parseInstruction();
 
+    bool isInstruction(TokenType type) const;
+    bool isMemoryInstruction(TokenType type) const;
 
+    void expectEndOfLine();
+    void throwSyntaxError(const std::string& message) const;
 };
 
 #endif

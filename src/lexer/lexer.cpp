@@ -1,24 +1,27 @@
 #include "lexer.h"
-#include <bits/stdc++.h>
 
-Lexer::Lexer(const string& source) : source(source) {}
+#include <cctype>
+#include <stdexcept>
+#include <unordered_map>
+
+Lexer::Lexer(const std::string& source) : source(source) {}
 
 char Lexer::current() const {
     if (currentIndex < source.size()) {
         return source[currentIndex];
     }
-    return '\0'; // Return null character if out of bounds
+    return '\0';
 }
 
 char Lexer::peek() const {
     if (currentIndex + 1 < source.size()) {
         return source[currentIndex + 1];
     }
-    return '\0'; // Return null character if out of bounds
+    return '\0';
 }
 
 void Lexer::advance() {
-    if(current() == '\n') {
+    if (current() == '\n') {
         currentLine++;
         currentColumn = 1;
     } else {
@@ -27,27 +30,30 @@ void Lexer::advance() {
     currentIndex++;
 }
 
-void Lexer::skipWhitespace(){
-    while(isspace(static_cast<unsigned char>(current()))) {
+void Lexer::skipWhitespace() {
+    while (std::isspace(static_cast<unsigned char>(current()))) {
         advance();
     }
 }
 
-void Lexer::skipComments(){
-    while(current()!='\n'&& current()!='\0'){
+void Lexer::skipComments() {
+    while (current() != '\n' && current() != '\0') {
         advance();
     }
 }
 
-Token Lexer::readWord(){
+Token Lexer::readWord() {
     const int startLine = currentLine;
     const int startColumn = currentColumn;
-    string word;
-    while(isalnum(static_cast<unsigned char>(current())) || current() == '_') {
+    std::string word;
+
+    while (std::isalnum(static_cast<unsigned char>(current())) ||
+           current() == '_') {
         word += current();
         advance();
     }
-    return{
+
+    return {
         keywordType(word),
         word,
         startLine,
@@ -55,21 +61,22 @@ Token Lexer::readWord(){
     };
 }
 
-Token Lexer::readNumber(){
+Token Lexer::readNumber() {
     const int startLine = currentLine;
     const int startColumn = currentColumn;
-    string number;
+    std::string number;
 
-    if(current() == '-'){
+    if (current() == '-') {
         number += current();
         advance();
     }
 
-    while(isdigit(static_cast<unsigned char>(current()))) {
+    while (std::isdigit(static_cast<unsigned char>(current()))) {
         number += current();
         advance();
     }
-    return{
+
+    return {
         TokenType::Number,
         number,
         startLine,
@@ -77,8 +84,8 @@ Token Lexer::readNumber(){
     };
 }
 
-TokenType Lexer::keywordType(const string& word) const {
-    static const unordered_map<string, TokenType> keywords = {
+TokenType Lexer::keywordType(const std::string& word) const {
+    static const std::unordered_map<std::string, TokenType> keywords = {
         {"STA", TokenType::STA},
         {"LDA", TokenType::LDA},
         {"ADD", TokenType::ADD},
@@ -93,29 +100,56 @@ TokenType Lexer::keywordType(const string& word) const {
     };
 
     auto it = keywords.find(word);
+
     if (it != keywords.end()) {
         return it->second;
     }
-    return TokenType::Identifier; // Default to Identifier if not a keyword
+
+    return TokenType::Identifier;
 }
 
-vector<Token> Lexer::tokenize() {
-    vector<Token> tokens;
+std::vector<Token> Lexer::tokenize() {
+    std::vector<Token> tokens;
+
     while (current() != '\0') {
         skipWhitespace();
-        if (current() == '\0') break;
 
-        if (isalpha(static_cast<unsigned char>(current())) || current() == '_') {// Identifiers and keywords start with a letter or underscore
+        if (current() == '\0') {
+            break;
+        }
+
+        if (std::isalpha(static_cast<unsigned char>(current())) ||
+            current() == '_') {
             tokens.push_back(readWord());
-        } else if (isdigit(static_cast<unsigned char>(current()))|| (current() == '-' && isdigit(static_cast<unsigned char>(peek())))) {// Numbers can start with a digit or a negative sign followed by a digit
+
+        } else if (
+            std::isdigit(static_cast<unsigned char>(current())) ||
+            (current() == '-' &&
+             std::isdigit(static_cast<unsigned char>(peek())))
+        ) {
             tokens.push_back(readNumber());
-        } else if (current() == ';') { // ';' starts a comment
+
+        } else if (current() == ';') {
             skipComments();
+
         } else {
-            // Handle unexpected characters or symbols
-            throw runtime_error("Unexpected character: " + string(1, current()) + " at line " + to_string(currentLine) + ", column " + to_string(currentColumn));
+            throw std::runtime_error(
+                "Unexpected character: " +
+                std::string(1, current()) +
+                " at line " +
+                std::to_string(currentLine) +
+                ", column " +
+                std::to_string(currentColumn)
+            );
         }
     }
-    tokens.push_back({TokenType::End_Of_File, "", currentLine, currentColumn});
+
+    tokens.push_back({
+        TokenType::End_Of_File,
+        "",
+        currentLine,
+        currentColumn
+    });
+
     return tokens;
 }

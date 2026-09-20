@@ -2,36 +2,53 @@
 #define ASSEMBLER_H
 
 #include "../parser/parser.h"
-#include <bits/stdc++.h>
 
-using namespace std;
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
-struct AssembledInstruction{
+struct AssembledInstruction {
     TokenType opcode;
-    optional<int> operand;
+    std::optional<int> operand;
 };
 
-class Assembler{
-    public: 
-        explicit Assembler(const vector<ParsedStatement>& statements);
-        vector<AssembledInstruction> assemble();
-    private:
-        const vector<ParsedStatement>& statements;
+class Assembler {
+public:
+    explicit Assembler(const std::vector<ParsedStatement>& statements);
 
-        unordered_map<string, int> labels;//maps label to position
+    std::vector<AssembledInstruction> assemble();
 
-        void firstPass();
-        AssembledInstruction assembleStatement(const ParsedStatement& statement);
-        int resolveOperand(const Token& operand) const;
-        void defineLabel(const Token& label, int address);
-        void validateDAT(const ParsedInstruction& instruction) const;
-        
-        void throwAssemblyError(const string& message) const;
-        void throwAssemblyError(
-            const string& message,
-            const Token& token
-        ) const;
+private:
+    const std::vector<ParsedStatement>& statements;
 
+    std::unordered_map<std::string, int> labels;
+
+    void firstPass();
+
+    AssembledInstruction assembleStatement(
+        const ParsedStatement& statement
+    );
+
+    int resolveOperand(const Token& operand) const;
+
+    void defineLabel(
+        const Token& label,
+        int address
+    );
+
+    void validateDAT(
+        const ParsedInstruction& instruction
+    ) const;
+
+    void throwAssemblyError(
+        const std::string& message
+    ) const;
+
+    void throwAssemblyError(
+        const std::string& message,
+        const Token& token
+    ) const;
 };
 
 #endif

@@ -1,10 +1,11 @@
 #ifndef LEXER_H
 #define LEXER_H
-#include <bits/stdc++.h>
-using namespace std;
+
+#include <string>
+#include <vector>
+#include <cstddef>
 
 enum class TokenType {
-    // Define your token types here
     Identifier,
     Number,
 
@@ -19,42 +20,39 @@ enum class TokenType {
     OUT,
     HLT,
     DAT,
-    
+
     End_Of_File,
 };
 
 struct Token {
-    //Tokens for the lexer to use (lexical analysis)
     TokenType type;
-    string value;
+    std::string value;
     int line;
     int column;
-
 };
 
-class Lexer {//interface for the lexer class
-    public:
-        explicit Lexer(const string& source);//explicit constructor to prevent implicit conversions (string to lexer)
-        vector<Token> tokenize();
-    private:
-        string source;
-        size_t currentIndex=0;
-        int currentLine=1;
-        int currentColumn=1;
+class Lexer {
+public:
+    explicit Lexer(const std::string& source);
+    std::vector<Token> tokenize();
 
-        // Helper functions for tokenization
-        char current() const;
-        char peek() const;
-        void advance();
+private:
+    std::string source;
+    std::size_t currentIndex = 0;
+    int currentLine = 1;
+    int currentColumn = 1;
 
-        // Whitespace and comment handling functions
-        void skipComments();
-        void skipWhitespace();
+    char current() const;
+    char peek() const;
+    void advance();
 
-        //Token reading functions
-        Token readWord();
-        Token readNumber();
+    void skipComments();
+    void skipWhitespace();
 
-        TokenType keywordType(const string& word) const;
+    Token readWord();
+    Token readNumber();
+
+    TokenType keywordType(const std::string& word) const;
 };
+
 #endif
