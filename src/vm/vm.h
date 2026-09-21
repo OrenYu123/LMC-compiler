@@ -11,6 +11,11 @@ public:
     explicit VM(const std::vector<AssembledInstruction>& program);
 
     void run();
+    void step();
+    int getAccumulator() const;
+    int getProgramCounter() const;
+    bool isHalted() const;
+    int getMemoryAddress(int address) const;
 
 private:
     const std::vector<AssembledInstruction>& program;

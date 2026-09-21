@@ -10,18 +10,40 @@ VM::VM(const std::vector<AssembledInstruction>& program)
 
 void VM::run() {
     while (!hlt) {
-        if (pc < 0 || pc >= static_cast<int>(program.size())) {
-            throwVMError(
-                "Program counter " + 
-                std::to_string(pc) + 
-                " is out of bounds."
-            );
-        }
-
-        const AssembledInstruction& instruction = program[pc];
-        executeInstruction(instruction);
+        step();
     }
 }
+//created for debugging
+void VM::step(){
+    if(hlt){return;}
+    if(pc < 0 || pc >= static_cast<int>(program.size())){
+        throwVMError(
+            "Program counter " + 
+            std::to_string(pc) + 
+            " is out of bounds."
+        );
+    }
+    const AssembledInstruction& instruction = program[pc];
+    executeInstruction(instruction);
+}
+
+int VM::getAccumulator() const {
+    return acc;
+}
+
+int VM::getProgramCounter() const{
+    return pc;
+}
+
+bool VM::isHalted() const{
+    return hlt;
+}
+
+int VM::getMemoryAddress(int address) const{
+    validateAddress(address);
+    return memory[address];
+}
+
 
 void VM::initializeMemory() {
     for (int address = 0;
