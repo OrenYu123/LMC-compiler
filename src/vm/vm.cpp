@@ -2,8 +2,9 @@
 #include "../common/LMC_constants.h"
 #include <iostream>
 #include <stdexcept>
+#include <utility>
 
-VM::VM(const std::vector<AssembledInstruction>& program)
+VM::VM(std::vector<AssembledInstruction> program)
     : program(program), memory(LMC::MEMORY_SIZE, 0) {
     initializeMemory();
 }

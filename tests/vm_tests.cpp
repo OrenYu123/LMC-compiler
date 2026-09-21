@@ -460,6 +460,131 @@ void testINPOverflow() {
     );
 }
 
+//------------------------
+// Batch 3 - debug tools
+//------------------------
+
+//Helper as runner executes immediattely rather than a step
+VM createVM(const std::string& source){
+    Lexer lexer(source);
+    std::vector<Token> tokens = lexer.tokenize();
+
+    Parser parser(tokens);
+    std::vector<ParsedStatement> statements = parser.parse();
+
+    Assembler assembler(statements);
+    std::vector<AssembledInstruction> program = assembler.assemble();
+
+    return VM(program);
+}
+
+//Tests a single step
+void testStep(){
+    std::string source = 
+    "LDA x\n"
+    "HLT\n"
+    "x DAT 42";
+
+    VM vm = createVM(source);
+
+    vm.step();
+
+    assertTrue(
+        vm.getAccumulator()==42,
+        "Step should execute one instruction."
+    );
+    assertTrue(
+        vm.getProgramCounter()==1,
+        "Program counter should advance after an instruction."
+    );
+
+}
+
+//tests multiple steps
+void testMultSteps(){
+    std::string source = 
+    "LDA x\n"
+    "ADD y\n"
+    "HLT\n"
+    "x DAT 5\n"
+    "y DAT 1";
+    VM vm = createVM(source);
+    
+    vm.step();
+    assertTrue(
+        vm.getAccumulator()==5&&vm.getProgramCounter()==1,
+        "State is incorrect after first step."
+    );
+
+    vm.step();
+    assertTrue(
+        vm.getAccumulator()==6&&vm.getProgramCounter()==2,
+        "State is incorrect after second step."
+    );
+}
+
+// Tests memory getter
+void testMemoryGetter(){
+    std::string source = 
+    "x DAT 40\n"
+    "HLT";
+    VM vm = createVM(source);
+
+    assertTrue(
+        vm.getMemoryAddress(0)==40,
+        "Memory address 0 should contain 40."
+    );
+    assertTrue(
+        vm.getMemoryAddress(1)==0,
+        "Memory address 1 should contain 0."
+    );
+
+}
+
+//Tests stepping after a halt
+void testStepAfterHalt(){
+    std::string source = 
+    "HLT\n"
+    "LDA x\n"
+    "x DAT 3";
+
+    VM vm = createVM(source);
+
+    vm.step();
+
+    assertTrue(
+        vm.getProgramCounter()==1,
+        "Program counter should advance after HLT."
+    );
+
+    vm.step();
+
+    assertTrue(
+        vm.getProgramCounter()==1&&vm.getAccumulator()==0,
+        "Step should do nothing after HLT."
+    );
+}
+
+void testInvalidMemoryAddress(){
+    VM vm = createVM("HLT");
+
+    bool thrown = false;
+
+    try{
+        vm.getMemoryAddress(LMC::MEMORY_SIZE);
+    }
+    catch(const std::exception){
+        thrown = true;
+    }
+    assertTrue(
+        thrown,
+        "Invalid memory address should throw an error/"
+    );
+}
+
+
+
+
 //--------------------
 // Test runner
 //--------------------
@@ -485,7 +610,12 @@ int main() {
         {"Multiple SUB overflow", testMultSUBOverflow},
         {"Execute DAT", testDATExecute},
         {"OOB PC", testPCOOB},
-        {"Overflow input", testINPOverflow}
+        {"Overflow input", testINPOverflow},
+        {"Step", testStep},
+        {"Multiple steps", testMultSteps},
+        {"Get memory address", testMemoryGetter},
+        {"Get invalid memory address", testInvalidMemoryAddress},
+        {"Step after HLT", testStepAfterHalt}
     };
 
     int passed = 0;

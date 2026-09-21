@@ -8,7 +8,7 @@
 
 class VM {
 public:
-    explicit VM(const std::vector<AssembledInstruction>& program);
+    explicit VM(std::vector<AssembledInstruction> program);
 
     void run();
     void step();
@@ -18,7 +18,7 @@ public:
     int getMemoryAddress(int address) const;
 
 private:
-    const std::vector<AssembledInstruction>& program;
+    std::vector<AssembledInstruction> program;
 
     std::vector<int> memory; // capped at 128 items
     int acc = 0;             // accumulator
