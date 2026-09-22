@@ -45,6 +45,17 @@ int VM::getMemoryAddress(int address) const{
     return memory[address];
 }
 
+int VM::getProgramSize() const{
+    return static_cast<int>(program.size());
+}
+
+const AssembledInstruction& VM::getInstruction(int address) const{
+    if(address < 0 || address >= static_cast<int>(program.size())){
+        throw std::out_of_range("Instruction address is outside of the program.");
+    }
+    return program[address];
+}
+
 
 void VM::initializeMemory() {
     for (int address = 0;

@@ -16,6 +16,9 @@ public:
     int getProgramCounter() const;
     bool isHalted() const;
     int getMemoryAddress(int address) const;
+    int getProgramSize() const;
+
+    const AssembledInstruction& getInstruction(int address) const;
 
 private:
     std::vector<AssembledInstruction> program;

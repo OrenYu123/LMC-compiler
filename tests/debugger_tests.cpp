@@ -527,7 +527,7 @@ void testBreakpointBeforeInstruction(){
     );
 
     assertTrue(
-        output.find("13\n") == std::string::npos,
+        output.find("\n13\n") == std::string::npos,
         "Instruction at the breakpoint should not execute."
     );
 
@@ -598,6 +598,132 @@ void testDeleteNonexistentBreakpoint(){
         "Deleting a nonexistent breakpoint should produce an error."
     );
 }
+//----------------------------------
+// Batch 3 - improving commands
+//----------------------------------
+void testMemoryRange(){
+    std::string source =
+        "LDA x\n"
+        "HLT\n"
+        "x DAT 5";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(vm, "memory 0 2\nq\n");
+
+    assertTrue(
+        output.find("Memory[0]:") != std::string::npos,
+        "Memory range should display the first address."
+    );
+
+    assertTrue(
+        output.find("Memory[1]:") != std::string::npos,
+        "Memory range should display the middle address."
+    );
+
+    assertTrue(
+        output.find("Memory[2]: 5") != std::string::npos,
+        "Memory range should display the last address."
+    );
+}
+void testInvalidMemoryRange(){
+    std::string source = "HLT";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(vm, "memory 5 2\nq\n");
+
+    assertTrue(
+        output.find("Start address must not be greater than end address.")
+            != std::string::npos,
+        "Reversed memory ranges should produce an error."
+    );
+}
+void testInvalidMemoryRangeAddress(){
+    std::string source = "HLT";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(vm, "memory 0 128\nq\n");
+
+    assertTrue(
+        output.find("Error: Inputted address is outside of range.")
+            != std::string::npos,
+        "Out-of-range memory ranges should produce an error."
+    );
+}
+
+void testProgramList(){
+    std::string source =
+        "LDA x\n"
+        "ADD y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 6\n"
+        "y DAT 7";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "list\n"
+        "q\n"
+    );
+    std::cout << output;
+    assertTrue(
+        output.find("->0: LDA 4") != std::string::npos,
+        "Program list should display the first instruction and current PC."
+    );
+
+    assertTrue(
+        output.find("  1: ADD 5") != std::string::npos,
+        "Program list should display ADD."
+    );
+
+    assertTrue(
+        output.find("  2: OUT") != std::string::npos,
+        "Program list should display OUT."
+    );
+
+    assertTrue(
+        output.find("  3: HLT") != std::string::npos,
+        "Program list should display HLT."
+    );
+
+    assertTrue(
+        output.find("  4: DAT 6") != std::string::npos,
+        "Program list should display DAT values."
+    );
+
+    assertTrue(
+        output.find("  5: DAT 7") != std::string::npos,
+        "Program list should display all program instructions."
+    );
+}
+
+void testProgramListAfterStep(){
+    std::string source =
+        "LDA x\n"
+        "HLT\n"
+        "x DAT 5";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "step\n"
+        "list\n"
+        "q\n"
+    );
+
+    assertTrue(
+        output.find("->1: HLT") != std::string::npos,
+        "Program list should mark the current instruction."
+    );
+}
+
+
+
 
 //--------------------
 // Test Runner
@@ -621,7 +747,21 @@ int main() {
         {"Help shortened", testHelpFast},
         {"Invalid command", testInvalidCommand},
         {"Empty command", testEmptyCommand},
-        {"Quit", testQuit}
+        {"Quit", testQuit},
+        {"Breakpoint", testBreakpoint},
+        {"Breakpoint shortened", testBreakpointFast},
+        {"Delete breakpoint", testDeleteBreakpoint},
+        {"Delete breakpoint shortened", testDeleteBreakpointFast},
+        {"Continue at breakpoint", testContinueBreakpoint},
+        {"Breakpoint before instruction", testBreakpointBeforeInstruction},
+        {"Breakpoint persists", testBreakpointPersists},
+        {"Invalid breakpoint", testInvalidBreakpoint},
+        {"Delete nonexistent breakpoint", testDeleteNonexistentBreakpoint},
+        {"Memory range", testMemoryRange},
+        {"Invalid memory range", testInvalidMemoryRange},
+        {"Invalid memory range address", testInvalidMemoryRangeAddress},
+        {"Program list", testProgramList},
+        {"Program list after step", testProgramListAfterStep}
     };
 
     int passed = 0;

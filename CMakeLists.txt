@@ -18,6 +18,8 @@ add_executable(lmc
     src/parser/parser.cpp
     src/assembler/assembler.cpp
     src/vm/vm.cpp
+    src/debugger/debugger.cpp
+    src/common/token_utils.cpp
 )
 # Lexer tests
 add_executable(lexer_tests
@@ -57,6 +59,7 @@ add_executable(debugger_tests
     src/assembler/assembler.cpp
     src/vm/vm.cpp
     src/debugger/debugger.cpp
+    src/common/token_utils.cpp
 )
 
 # Register tests with CTest

@@ -1,5 +1,6 @@
 #include "debugger.h"
 #include "../common/LMC_constants.h"
+#include "../common/token_utils.h"
 #include <iostream>
 #include <sstream>
 
@@ -13,7 +14,7 @@ void Debugger::run(){
 
     std::string input;
     while(running){
-        std::cout << "\n(debug)";
+        std::cout << "\n(debug)\n";
 
         if(!std::getline(std::cin, input)){
             break;
@@ -32,12 +33,18 @@ void Debugger::executeCommand(const std::string& input){
     else if(command == "continue" || command == "c"){continueExecution();}
     else if(command == "registers" || command == "r"){printRegisters();}
     else if(command == "memory" || command == "m"){
-        int address;
-        if(!(ss >> address)){
+        int start;
+        int end;
+        if(!(ss >> start)){
             std::cout << "Usage: memory <address>\n";
             return;
         }
-        printMemory(address);
+        if(ss >> end){
+            printMemory(start,end);
+        }
+        else{
+            printMemory(start);
+        }
     }
     else if(command == "help" || command == "h"){
         printHelp();
@@ -63,6 +70,9 @@ void Debugger::executeCommand(const std::string& input){
     }
     else if(command == "breakpoints" || command == "bl"){
         printBreakpoints();
+    }
+    else if(command == "list" || command == "l"){
+        programList();
     }
     else if(command.empty()){
         //ignore
@@ -121,10 +131,11 @@ void Debugger::printHelp(){
     "  step, s\n" << "    Execute one instruction.\n\n" <<
     "  continue, c\n" << "      Execute until the program halts.\n\n" <<
     "  registers, r\n" << "      Displays the program counter and accumulator.\n\n" <<
-    "  memory <address>, m <address>\n" << "      Displays a memory location.\n\n" <<
+    "  memory <address> [end], m <address> [end]\n" << "      Displays a memory location or a range of memory.\n\n" <<
     "  break <address>, b <address>\n" << "      Adds a breakpoint at the address.\n\n" <<
     "  delete <address>, d <address>\n" << "      Deletes a breakpoint at the address.\n\n" <<
     "  breakpoints, bl\n" << "      Displays the existing breakpoints.\n\n" <<
+    "  list, l\n" << "      Displays the program and current instruction.\n\n" <<
     "  help, h\n" << "      Displays this help message.\n\n" <<
     "  quit, q\n" << "      Exits the debugger.\n\n";
 }
@@ -136,6 +147,22 @@ void Debugger::printMemory(int address){
     }
     catch(const std::exception& e){
         std::cout << "Error: " << e.what() << '\n';
+    }
+}
+
+void Debugger::printMemory(int start, int end){
+    if(start < 0 || start >= LMC::MEMORY_SIZE ||
+       end < 0 || end >= LMC::MEMORY_SIZE){
+        std::cout << "Error: Inputted address is outside of range.\n";
+        return;
+    }
+    if(start > end){
+        std::cout << "Error: Start address must not be greater than end address.\n";
+        return;
+    }
+    for(int address = start; address <= end; address++){
+        std::cout << "Memory[" << address << "]: "
+                  << vm.getMemoryAddress(address) << '\n';
     }
 }
 
@@ -170,5 +197,25 @@ void Debugger::printBreakpoints(){
     for(const auto& address : breakpoints){
         std::cout << "Breakpoint " << i << " at address " << address << ".\n";
         i++;
+    }
+}
+
+void Debugger::programList(){
+    for(int address = 0; address < static_cast<int>(vm.getProgramSize()); address++){
+        const AssembledInstruction& instruction = vm.getInstruction(address);
+
+        if(address == vm.getProgramCounter()){
+            std::cout << "->";
+        }
+        else{
+            std::cout << "  ";
+        }
+
+        std::cout << address << ": " << tokenTypeToString(instruction.opcode);
+        if(instruction.operand.has_value()){
+            std::cout << " " << instruction.operand.value();
+        }
+
+        std::cout << '\n';
     }
 }

@@ -20,7 +20,9 @@ class Debugger{
         void continueExecution();
         void printRegisters();
         void printMemory(int address);
+        void printMemory(int start, int end);   
         void printHelp();
+        void programList();
 
         void addBreakpoint(int address);
         void removeBreakpoint(int address);
