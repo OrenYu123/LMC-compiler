@@ -5,7 +5,17 @@
 #include <utility>
 
 VM::VM(std::vector<AssembledInstruction> program)
-    : program(program), memory(LMC::MEMORY_SIZE, 0) {
+    : VM(std::move(program), {})
+{}
+
+VM::VM(
+    std::vector<AssembledInstruction> program,
+    std::unordered_map<std::string, int> labels
+)
+    : program(std::move(program)),
+      labels(std::move(labels)),
+      memory(LMC::MEMORY_SIZE, 0)
+{
     initializeMemory();
 }
 
@@ -54,6 +64,10 @@ const AssembledInstruction& VM::getInstruction(int address) const{
         throw std::out_of_range("Instruction address is outside of the program.");
     }
     return program[address];
+}
+
+const std::unordered_map<std::string, int>& VM::getLabels() const{
+    return labels;
 }
 
 

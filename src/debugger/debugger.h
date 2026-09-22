@@ -27,5 +27,7 @@ class Debugger{
         void addBreakpoint(int address);
         void removeBreakpoint(int address);
         void printBreakpoints();
+
+        int resolveAddress(const std::string& target);
 };
 #endif

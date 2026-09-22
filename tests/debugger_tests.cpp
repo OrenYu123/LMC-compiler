@@ -32,7 +32,10 @@ VM createVM(const std::string& source){
     Assembler assembler(statements);
     std::vector<AssembledInstruction> program = assembler.assemble();
 
-    return VM(std::move(program));
+    return VM(
+        std::move(program),
+        assembler.getLabels()
+    );
 }
 
 //Runner
@@ -571,7 +574,7 @@ void testInvalidBreakpoint(){
 
     std::string output = runDebugger(
         vm,
-        "break -1\n"
+        "break 128\n"
         "q\n"
     );
 
@@ -721,8 +724,86 @@ void testProgramListAfterStep(){
         "Program list should mark the current instruction."
     );
 }
+//------------------------------------
+// Batch 4 - adding label tracking
+//------------------------------------
+void testLabels(){
+    std::string source =
+        "loop INP\n"
+        "BRA loop\n";
 
+    VM vm = createVM(source);
 
+    const auto& labels = vm.getLabels();
+
+    assertTrue(
+        labels.find("loop") != labels.end(),
+        "VM should contain assembler labels."
+    );
+
+    assertTrue(
+        labels.at("loop") == 0,
+        "Label should point to the correct address."
+    );
+}
+void testBreakLabel(){
+    std::string source =
+        "loop INP\n"
+        "BRA loop\n";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "break loop\n"
+        "breakpoints\n"
+        "quit\n"
+    );
+
+    assertTrue(
+        output.find("Breakpoint 1 at address 0.") != std::string::npos,
+        "Debugger should resolve a label when setting a breakpoint."
+    );
+}
+void testDeleteBreakpointLabel(){
+    std::string source =
+        "loop INP\n"
+        "BRA loop\n";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "break loop\n"
+        "delete loop\n"
+        "breakpoints\n"
+        "quit\n"
+    );
+
+    assertTrue(
+        output.find("No breakpoints set.") != std::string::npos,
+        "Debugger should resolve a label when deleting a breakpoint."
+    );
+}
+void testProgramListLabels(){
+    std::string source =
+        "loop INP\n"
+        "BRA loop\n"
+        "HLT\n";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "list\n"
+        "quit\n"
+    );
+
+    assertTrue(
+        output.find("->0: INP [loop]") != std::string::npos,
+        "Program list should display labels."
+    );
+}
 
 
 //--------------------
@@ -761,7 +842,11 @@ int main() {
         {"Invalid memory range", testInvalidMemoryRange},
         {"Invalid memory range address", testInvalidMemoryRangeAddress},
         {"Program list", testProgramList},
-        {"Program list after step", testProgramListAfterStep}
+        {"Program list after step", testProgramListAfterStep},
+        {"Labels", testLabels},
+        {"Break label", testBreakLabel},
+        {"Delete breakpoint label", testDeleteBreakpointLabel},
+        {"Program list labels", testProgramListLabels}
     };
 
     int passed = 0;

@@ -18,6 +18,7 @@ public:
     explicit Assembler(const std::vector<ParsedStatement>& statements);
 
     std::vector<AssembledInstruction> assemble();
+    const std::unordered_map<std::string, int>& getLabels() const;
 
 private:
     const std::vector<ParsedStatement>& statements;

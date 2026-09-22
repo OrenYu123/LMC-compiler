@@ -53,20 +53,29 @@ void Debugger::executeCommand(const std::string& input){
         running = false;
     }
     else if(command == "break" || command == "b"){
-        int address;
-        if(!(ss >> address)){
+        std::string target;
+        if(!(ss >> target)){
             std::cout << "Usage: break <address>\n";
             return;
         }
-        addBreakpoint(address);
+        int address = resolveAddress(target);
+        if(address>=0){
+            addBreakpoint(address);
+        }
     }
-    else if(command =="delete" || command == "d"){
-         int address;
-         if(!(ss >> address)){
-            std::cout << "Usage: delete <address>\n";
+    else if(command == "delete" || command == "d"){
+        std::string target;
+
+        if(!(ss >> target)){
+            std::cout << "Usage: delete <address|label>\n";
             return;
-         }
-         removeBreakpoint(address);
+        }
+
+        int address = resolveAddress(target);
+
+        if(address >= 0){
+            removeBreakpoint(address);
+        }
     }
     else if(command == "breakpoints" || command == "bl"){
         printBreakpoints();
@@ -201,6 +210,7 @@ void Debugger::printBreakpoints(){
 }
 
 void Debugger::programList(){
+    const auto& labels = vm.getLabels();
     for(int address = 0; address < static_cast<int>(vm.getProgramSize()); address++){
         const AssembledInstruction& instruction = vm.getInstruction(address);
 
@@ -215,7 +225,39 @@ void Debugger::programList(){
         if(instruction.operand.has_value()){
             std::cout << " " << instruction.operand.value();
         }
+        for (const auto& [label, labelAddress] : labels){
+            if(labelAddress == address){
+                std::cout << " [" << label << "]";
+                break;
+            }
+        }
 
         std::cout << '\n';
+    }
+}
+
+int Debugger::resolveAddress(const std::string& target){
+    // Check for a label first.
+    const auto& labels = vm.getLabels();
+
+    auto label = labels.find(target);
+    if(label != labels.end()){
+        return label->second;
+    }
+    // Otherwise parse as an integer.
+    try{
+        size_t pos = 0;
+        int address = std::stoi(target, &pos);
+
+        if(pos != target.size()){
+            throw std::invalid_argument("Invalid address");
+        }
+
+        return address;
+    }
+    catch(const std::exception&){
+        std::cout << "Error: '" << target
+                  << "' is not a valid address or label.\n";
+        return -1;
     }
 }

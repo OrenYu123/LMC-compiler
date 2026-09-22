@@ -20,6 +20,10 @@ std::vector<AssembledInstruction> Assembler::assemble() {
     return program;
 }
 
+const std::unordered_map<std::string, int>& Assembler::getLabels() const{
+    return labels;
+}
+
 void Assembler::firstPass() {
     if (statements.size() > LMC::MEMORY_SIZE) {
         throwAssemblyError(
@@ -169,3 +173,4 @@ void Assembler::throwAssemblyError(
         "Assembly error: " + message
     );
 }
+

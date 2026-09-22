@@ -5,11 +5,15 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 class VM {
 public:
     explicit VM(std::vector<AssembledInstruction> program);
-
+    VM(
+        std::vector<AssembledInstruction> program,
+        std::unordered_map<std::string, int> labels
+    );
     void run();
     void step();
     int getAccumulator() const;
@@ -17,6 +21,7 @@ public:
     bool isHalted() const;
     int getMemoryAddress(int address) const;
     int getProgramSize() const;
+    const std::unordered_map<std::string, int>& getLabels() const;
 
     const AssembledInstruction& getInstruction(int address) const;
 
@@ -27,6 +32,7 @@ private:
     int acc = 0;             // accumulator
     int pc = 0;              // program counter
     bool hlt = false;
+    std::unordered_map<std::string, int> labels;
 
     // General execute
     void executeInstruction(const AssembledInstruction& instruction);
