@@ -1,5 +1,5 @@
 #include "debugger.h"
-
+#include "../common/LMC_constants.h"
 #include <iostream>
 #include <sstream>
 
@@ -45,6 +45,25 @@ void Debugger::executeCommand(const std::string& input){
     else if(command == "quit" || command == "q"){
         running = false;
     }
+    else if(command == "break" || command == "b"){
+        int address;
+        if(!(ss >> address)){
+            std::cout << "Usage: break <address>\n";
+            return;
+        }
+        addBreakpoint(address);
+    }
+    else if(command =="delete" || command == "d"){
+         int address;
+         if(!(ss >> address)){
+            std::cout << "Usage: delete <address>\n";
+            return;
+         }
+         removeBreakpoint(address);
+    }
+    else if(command == "breakpoints" || command == "bl"){
+        printBreakpoints();
+    }
     else if(command.empty()){
         //ignore
     }
@@ -74,8 +93,14 @@ void Debugger::continueExecution(){
         std::cout << "Program is already halted.\n";
         return;   
     }
+
     try{
         while(!vm.isHalted()){
+            if(breakpoints.find(vm.getProgramCounter())!=breakpoints.end()){
+                std::cout << "Breakpoint hit at address " << vm.getProgramCounter() << ".\n";
+                printRegisters();
+                return;
+            }
             vm.step();
         }
         std::cout << "Program Halted.\n";
@@ -97,6 +122,9 @@ void Debugger::printHelp(){
     "  continue, c\n" << "      Execute until the program halts.\n\n" <<
     "  registers, r\n" << "      Displays the program counter and accumulator.\n\n" <<
     "  memory <address>, m <address>\n" << "      Displays a memory location.\n\n" <<
+    "  break <address>, b <address>\n" << "      Adds a breakpoint at the address.\n\n" <<
+    "  delete <address>, d <address>\n" << "      Deletes a breakpoint at the address.\n\n" <<
+    "  breakpoints, bl\n" << "      Displays the existing breakpoints.\n\n" <<
     "  help, h\n" << "      Displays this help message.\n\n" <<
     "  quit, q\n" << "      Exits the debugger.\n\n";
 }
@@ -108,5 +136,39 @@ void Debugger::printMemory(int address){
     }
     catch(const std::exception& e){
         std::cout << "Error: " << e.what() << '\n';
+    }
+}
+
+void Debugger::addBreakpoint(int address){
+    if(address<0 || address >= LMC::MEMORY_SIZE){
+        std::cout << "Error: Inputted address is outside of range.\n";
+        return;
+    }
+    breakpoints.insert(address);
+}
+
+void Debugger::removeBreakpoint(int address){
+    if(address<0 || address >= LMC::MEMORY_SIZE){
+        std::cout << "Error: Inputted address is outside of range.\n";
+        return;
+    }
+    auto it = breakpoints.find(address);
+    if(it!=breakpoints.end()){
+        breakpoints.erase(address);
+    }
+    else{
+        std::cout << "Error: Inputted address doesn't exist as a breakpoint.\n";
+    }
+}
+
+void Debugger::printBreakpoints(){
+    if(breakpoints.empty()){
+        std::cout << "No breakpoints set.\n";
+        return;
+    }
+    int i = 1;
+    for(const auto& address : breakpoints){
+        std::cout << "Breakpoint " << i << " at address " << address << ".\n";
+        i++;
     }
 }

@@ -384,6 +384,221 @@ void testQuit() {
     );
 }
 
+//--------------------------------
+// Batch 2 - added breakpoints
+//--------------------------------
+
+
+
+// Tests adding a breakpoint
+void testBreakpoint(){
+    std::string source =
+        "LDA x\n"
+        "ADD y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 6\n"
+        "y DAT 7";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(vm, "break 2\nbreakpoints\nq\n");
+
+    assertTrue(
+        output.find("Breakpoint 1 at address 2.") != std::string::npos,
+        "Break should add a breakpoint at the given address."
+    );
+}
+
+// Tests breakpoint abbreviation
+void testBreakpointFast(){
+    std::string source =
+        "HLT";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(vm, "b 0\nbl\nq\n");
+
+    assertTrue(
+        output.find("Breakpoint 1 at address 0.") != std::string::npos,
+        "Debugger 'b' should add a breakpoint and 'bl' should display it."
+    );
+}
+
+// Tests deleting a breakpoint
+void testDeleteBreakpoint(){
+    std::string source =
+        "HLT";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "break 0\n"
+        "delete 0\n"
+        "breakpoints\n"
+        "q\n"
+    );
+
+    assertTrue(
+        output.find("No breakpoints set.") != std::string::npos,
+        "Delete should remove an existing breakpoint."
+    );
+}
+
+// Tests deleting a breakpoint with the abbreviation
+void testDeleteBreakpointFast(){
+    std::string source =
+        "HLT";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "b 0\n"
+        "d 0\n"
+        "bl\n"
+        "q\n"
+    );
+
+    assertTrue(
+        output.find("No breakpoints set.") != std::string::npos,
+        "Debugger 'd' should delete a breakpoint."
+    );
+}
+
+// Tests that continue stops when it reaches a breakpoint
+void testContinueBreakpoint(){
+    std::string source =
+        "LDA x\n"
+        "ADD y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 6\n"
+        "y DAT 7";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "break 2\n"
+        "continue\n"
+        "q\n"
+    );
+
+    assertTrue(
+        output.find("Breakpoint hit at address 2") != std::string::npos,
+        "Continue should stop when it reaches a breakpoint."
+    );
+
+    assertTrue(
+        vm.getProgramCounter() == 2,
+        "Program counter should be at the breakpoint."
+    );
+
+    assertTrue(
+        vm.getAccumulator() == 13,
+        "Accumulator should contain the value from instructions before the breakpoint."
+    );
+
+    assertTrue(
+        !vm.isHalted(),
+        "VM should not be halted when a breakpoint is hit."
+    );
+}
+
+// Tests that the instruction at the breakpoint has not executed
+void testBreakpointBeforeInstruction(){
+    std::string source =
+        "LDA x\n"
+        "ADD y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 6\n"
+        "y DAT 7";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "break 2\n"
+        "continue\n"
+        "q\n"
+    );
+
+    assertTrue(
+        output.find("13\n") == std::string::npos,
+        "Instruction at the breakpoint should not execute."
+    );
+
+    assertTrue(
+        vm.getProgramCounter() == 2,
+        "Program should stop before executing the breakpoint instruction."
+    );
+}
+
+// Tests that a breakpoint remains after being hit
+void testBreakpointPersists(){
+    std::string source =
+        "LDA x\n"
+        "ADD y\n"
+        "OUT\n"
+        "HLT\n"
+        "x DAT 6\n"
+        "y DAT 7";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "break 2\n"
+        "continue\n"
+        "breakpoints\n"
+        "q\n"
+    );
+
+    assertTrue(
+        output.find("Breakpoint 1 at address 2.") != std::string::npos,
+        "A breakpoint should remain after being hit."
+    );
+}
+
+// Tests invalid breakpoint addresses
+void testInvalidBreakpoint(){
+    std::string source = "HLT";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "break -1\n"
+        "q\n"
+    );
+
+    assertTrue(
+        output.find("Error: Inputted address is outside of range.") != std::string::npos,
+        "Invalid breakpoint addresses should produce an error."
+    );
+}
+
+// Tests deleting a nonexistent breakpoint
+void testDeleteNonexistentBreakpoint(){
+    std::string source = "HLT";
+
+    VM vm = createVM(source);
+
+    std::string output = runDebugger(
+        vm,
+        "delete 5\n"
+        "q\n"
+    );
+
+    assertTrue(
+        output.find("Error: Inputted address doesn't exist as a breakpoint.") != std::string::npos,
+        "Deleting a nonexistent breakpoint should produce an error."
+    );
+}
+
 //--------------------
 // Test Runner
 //--------------------
