@@ -43,7 +43,7 @@ void Debugger::executeCommand(const std::string& input){
         printHelp();
     }
     else if(command == "quit" || command == "q"){
-        running == false;
+        running = false;
     }
     else if(command.empty()){
         //ignore
@@ -99,4 +99,14 @@ void Debugger::printHelp(){
     "  memory <address>, m <address>\n" << "      Displays a memory location.\n\n" <<
     "  help, h\n" << "      Displays this help message.\n\n" <<
     "  quit, q\n" << "      Exits the debugger.\n\n";
+}
+
+void Debugger::printMemory(int address){
+    try{
+        std::cout << "Memory[" << address << "]: "
+                  << vm.getMemoryAddress(address) << '\n';
+    }
+    catch(const std::exception& e){
+        std::cout << "Error: " << e.what() << '\n';
+    }
 }
