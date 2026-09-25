@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <utility>
+#include <limits>
 
 VM::VM(std::vector<AssembledInstruction> program)
     : VM(std::move(program), {})
@@ -13,8 +14,8 @@ VM::VM(
     std::unordered_map<std::string, int> labels
 )
     : program(std::move(program)),
-      labels(std::move(labels)),
-      memory(LMC::MEMORY_SIZE, 0)
+      memory(LMC::MEMORY_SIZE, 0),
+      labels(std::move(labels))
 {
     initializeMemory();
 }
@@ -215,6 +216,10 @@ void VM::executeINP() {
             + std::to_string(LMC::MAX_VALUE) + 
             ".");
     }
+    std::cin.ignore(
+        std::numeric_limits<std::streamsize>::max(),
+        '\n'
+    );
 
     acc = input;
 }

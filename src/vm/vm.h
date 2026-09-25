@@ -52,7 +52,7 @@ private:
     void initializeMemory();
     int wrapValue(int value) const;
     void validateAddress(int address) const;
-    void throwVMError(const std::string& message) const;
+    [[noreturn]]void throwVMError(const std::string& message) const;
 };
 
 #endif

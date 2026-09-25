@@ -2,6 +2,7 @@
 #include "../common/LMC_constants.h"
 #include <stdexcept>
 #include <string>
+#include <charconv>
 
 Assembler::Assembler(
     const std::vector<ParsedStatement>& statements
@@ -72,7 +73,7 @@ AssembledInstruction Assembler::assembleStatement(
 
         return {
             instruction.opcode,
-            std::stoi(instruction.operand->value)
+            parseInt(*instruction.operand)
         };
     }
 
@@ -96,7 +97,7 @@ int Assembler::resolveOperand(const Token& operand) const {
     int address;
 
     if (operand.type == TokenType::Number) {
-        address = std::stoi(operand.value);
+        address = parseInt(operand);
     }
     else if (operand.type == TokenType::Identifier) {
         auto it = labels.find(operand.value);
@@ -137,7 +138,7 @@ void Assembler::validateDAT(
     }
 
     const Token& value = *instruction.operand;
-    int number = std::stoi(value.value);
+    int number = parseInt(value);
 
     if (number < LMC::MIN_VALUE || number > LMC::MAX_VALUE) {
         throwAssemblyError(
@@ -165,6 +166,25 @@ void Assembler::throwAssemblyError(
         message
     );
 }
+
+int Assembler::parseInt(const Token& token) const{
+    int val = 0;
+    const char* first = token.value.data();
+    const char* last = first + token.value.size();
+    const auto result = std::from_chars(first, last, val);
+
+    if(result.ec == std::errc::result_out_of_range){
+        throwAssemblyError("Number is out of range.", token);
+    }
+    if(result.ec != std::errc{} || result.ptr != last){
+        throwAssemblyError(
+            "Invalid number '" + token.value + "'.",
+            token
+        );
+    }
+    return val;
+}
+
 
 void Assembler::throwAssemblyError(
     const std::string& message

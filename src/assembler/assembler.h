@@ -50,6 +50,8 @@ private:
         const std::string& message,
         const Token& token
     ) const;
+
+    int parseInt(const Token& token ) const;
 };
 
 #endif
